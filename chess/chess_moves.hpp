@@ -173,22 +173,11 @@ inline vector<move_t> ChessBoard::getmoves(ChessPiece* piece) {
 }
 
 inline bool ChessBoard::ischeck(bool iswhite) {
-    if (iswhite) {
-        for (ChessPiece* piece: blackpcs) {
-            vector<move_t> moves = getmoves(piece);
-            for (move_t& move: moves) {
-                if (move.first == whiteking->x and move.second == whiteking->y) {
-                    return true;
-                }
-            }
-        }
-    } else {
-        for (ChessPiece* piece: whitepcs) {
-            vector<move_t> moves = getmoves(piece);
-            for (move_t& move: moves) {
-                if (move.first == blackking->x and move.second == blackking->y) {
-                    return true;
-                }
+    for (ChessPiece* piece: pieces[!iswhite]) {
+        vector<move_t> moves = getmoves(piece);
+        for (move_t& move: moves) {
+            if (move.first == kings[iswhite]->x and move.second == kings[iswhite]->y) {
+                return true;
             }
         }
     }
@@ -202,20 +191,19 @@ inline void ChessBoard::printmoves(ChessPiece* piece) {
     }
 }
 inline void ChessBoard::print_all_moves(bool iswhite) {
-    for (ChessPiece* pc: ChessBoard::whitepcs) {
+    for (ChessPiece* pc: ChessBoard::pieces[iswhite]) {
         cout << pc->x << pc->y << '\n';
         ChessBoard::printmoves(pc);
     }
 }
 
-inline vector<move_pair_t> get_all_moves() {
+inline vector<move_pair_t> ChessBoard::get_all_moves(bool iswhite) {
     vector<move_pair_t> val;
-    for (ChessPiece* pc: ChessBoard::whitepcs) {
-        cout << pc->x << pc->y << '\n';
-        ChessBoard::printmoves(pc);
+    for (ChessPiece* pc: ChessBoard::pieces[iswhite]) {
+        vector<move_t> moves = getmoves(pc);
+        for (move_t& move: moves) {
+            val.push_back({pc, move});
+        }
     }
-    vector<move_t> moves = getmoves(piece);
-    for (move_t& move: moves) {
-        cout << move.first << " " << move.second << '\n';
-    }
+    return val;
 }

@@ -16,10 +16,7 @@ int main() {
     board->setup();
     board->printboard();
     board->printpcs();
-    for (ChessPiece* pc: board->whitepcs) {
-        cout << pc->x << pc->y << '\n';
-        board->printmoves(pc);
-    }
+    board->print_all_moves(true);
 
     return 0;
 }

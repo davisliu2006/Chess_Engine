@@ -13,7 +13,7 @@ using namespace std;
 using move_t = pair<int,int>;
 using move_score_t = pair<double,double>;
 
-enum piece_e {
+enum piece_e : char {
     pawn = 'p', knight = 'k',
     bishop = 'b', rook = 'r',
     queen = 'Q', king = 'K'
@@ -52,10 +52,8 @@ struct move_pair_score_t {
 
 struct ChessBoard {
     ChessPiece* grid[8][8];
-    vector<ChessPiece*> whitepcs;
-    vector<ChessPiece*> blackpcs;
-    ChessPiece* whiteking = NULL;
-    ChessPiece* blackking = NULL;
+    array<vector<ChessPiece*>,2> pieces;
+    array<ChessPiece*,2> kings = {NULL, NULL};
 
     ChessBoard() {
         for (int i = 0; i < 8; i++) {
@@ -71,21 +69,22 @@ struct ChessBoard {
 
     void addpiece(bool iswhite, piece_e type, int x, int y) {
         ChessPiece* piece = new ChessPiece(iswhite, type);
-        if (iswhite) {
-            whitepcs.push_back(piece);
-        } else {
-            blackpcs.push_back(piece);
-        }
+        pieces[iswhite].push_back(piece);
         grid[piece->x = x][piece->y = y] = piece;
         piece->onboard = true;
     }
     void addpiece(ChessPiece* piece, int x, int y) {
-        if (piece->iswhite) {
-            whitepcs.push_back(piece);
-        } else {
-            blackpcs.push_back(piece);
-        }
+        pieces[piece->iswhite].push_back(piece);
         grid[piece->x = x][piece->y = y] = piece;
+        piece->onboard = true;
+    }
+
+    void captpiece(ChessPiece* piece) {
+        grid[piece->x][piece->y] = NULL;
+        piece->onboard = false;
+    }
+    void uncaptpiece(ChessPiece* piece) {
+        grid[piece->x][piece->y] = piece;
         piece->onboard = true;
     }
 
@@ -117,25 +116,20 @@ struct ChessBoard {
 
     double get_score(bool iswhite) {
         double val = 0;
-        if (iswhite) {
-            for (ChessPiece* piece: whitepcs) {
-                val += pieceval[piece->type];
-            }
-        } else {
-            for (ChessPiece* piece: blackpcs) {
-                val += pieceval[piece->type];
-            }
+        for (ChessPiece* piece: pieces[iswhite]) {
+            val += pieceval[piece->type];
         }
+        return val;
     }
 
     void printpcs() {
-        for (ChessPiece* piece: whitepcs) {
+        for (ChessPiece* piece: pieces[1]) {
             if (not piece->onboard) {
                 cout << "-";
             }
             cout << piece->type << "1@" << piece->x << piece->y << " ";
         }
-        for (ChessPiece* piece: blackpcs) {
+        for (ChessPiece* piece: pieces[0]) {
             if (not piece->onboard) {
                 cout << "-";
             }
@@ -161,6 +155,6 @@ struct ChessBoard {
     bool ischeck(bool iswhite);
     void printmoves(ChessPiece* piece);
     void print_all_moves(bool iswhite);
-
+    vector<move_pair_t> get_all_moves(bool iswhite);
     vector<move_pair_score_t> get_move_scores(int r, bool iswhite);
 };
