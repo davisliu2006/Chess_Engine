@@ -6,6 +6,9 @@
 #include <list>
 #include <map>
 #include <queue>
+#include <set>
+#include <unordered_map>
+#include <unordered_set>
 #include <vector>
 
 using namespace std;
@@ -52,7 +55,7 @@ struct move_pair_score_t {
 
 struct ChessBoard {
     ChessPiece* grid[8][8];
-    array<vector<ChessPiece*>,2> pieces;
+    array<set<ChessPiece*>,2> pieces;
     array<ChessPiece*,2> kings = {NULL, NULL};
 
     ChessBoard() {
@@ -69,23 +72,20 @@ struct ChessBoard {
 
     void addpiece(bool iswhite, piece_e type, int x, int y) {
         ChessPiece* piece = new ChessPiece(iswhite, type);
-        pieces[iswhite].push_back(piece);
+        pieces[iswhite].insert(piece);
         grid[piece->x = x][piece->y = y] = piece;
         piece->onboard = true;
     }
     void addpiece(ChessPiece* piece, int x, int y) {
-        pieces[piece->iswhite].push_back(piece);
+        pieces[piece->iswhite].insert(piece);
         grid[piece->x = x][piece->y = y] = piece;
         piece->onboard = true;
     }
 
-    void captpiece(ChessPiece* piece) {
+    void rempiece(ChessPiece* piece) {
+        pieces[piece->iswhite].erase(piece);
         grid[piece->x][piece->y] = NULL;
         piece->onboard = false;
-    }
-    void uncaptpiece(ChessPiece* piece) {
-        grid[piece->x][piece->y] = piece;
-        piece->onboard = true;
     }
 
     void movepiece(ChessPiece* piece, int x, int y) {
