@@ -11,6 +11,9 @@
 #include <unordered_set>
 #include <vector>
 
+#include "../headers/system.hpp"
+#include "../headers/rng.hpp"
+
 using namespace std;
 
 using move_t = pair<int,int>;
@@ -33,7 +36,7 @@ class ChessBoard;
 
 struct ChessPiece {
     bool iswhite;
-    piece_e type;
+    char type;
     int x = 0; // 1-8
     int y = 0; // 1-8
     bool onboard = false;
@@ -43,15 +46,24 @@ struct ChessPiece {
         type = type1;
     }
 };
+inline ostream& operator <<(ostream& out, const ChessPiece& piece) {
+    return out << piece.type << piece.iswhite << '@' << piece.x << piece.y;
+}
 
 struct move_pair_t {
     ChessPiece* piece;
     move_t move;
 };
+inline ostream& operator <<(ostream& out, const move_pair_t& mp) {
+    return out << *mp.piece << " to " << mp.move.first << mp.move.second;
+}
 struct move_pair_score_t {
     move_pair_t move_pair;
     move_score_t move_score;
 };
+inline ostream& operator <<(ostream& out, const move_pair_score_t& mps) {
+    return out << mps.move_pair << " (" << mps.move_score.first << ',' << mps.move_score.second << ')';
+}
 
 struct ChessBoard {
     ChessPiece* grid[8][8];
@@ -117,7 +129,7 @@ struct ChessBoard {
     double get_score(bool iswhite) {
         double val = 0;
         for (ChessPiece* piece: pieces[iswhite]) {
-            val += pieceval[piece->type];
+            val += pieceval[(piece_e)piece->type];
         }
         return val;
     }
@@ -157,4 +169,5 @@ struct ChessBoard {
     void print_all_moves(bool iswhite);
     vector<move_pair_t> get_all_moves(bool iswhite);
     vector<move_pair_score_t> get_move_scores(int r, bool iswhite);
+    move_pair_score_t get_best_move(int r, bool iswhite);
 };
