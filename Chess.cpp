@@ -3,7 +3,6 @@
 #include <list>
 #include <queue>
 #include <vector>
-#include <SDL2/SDL.h>
 
 #include "headers/system.hpp"
 #include "headers/rng.hpp"
