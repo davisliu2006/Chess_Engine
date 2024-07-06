@@ -17,7 +17,7 @@
         } else {
             vector<move_pair_score_t> solve = get_move_scores(r-1, !iswhite);
             move_pair_score_t bestmove = {};
-            for (auto& [mvpr, score]: solve) {
+            for (const auto& [mvpr, score]: solve) {
 
             }
             val.push_back({{piece, move}, bestmove.move_score});
@@ -39,8 +39,8 @@ inline move_pair_score_t ChessBoard::get_best_move(int r, bool iswhite) {
     vector<move_pair_score_t> vals; // all "best moves"
     double best_advatage = -1e9; // best score difference
     vector<move_pair_t> moves = get_all_moves(iswhite); // get all possible moves
-    if (moves.size() == 0) { // no valid moves
-        return {move_pair_t::INVALID(), {
+    if (moves.size() == 0) { // no valid moves, LOSE
+        return {move_pair_t::INVALID(), { // losing slightly later (lower "r") is better
             iswhite? -10000-r : get_score(true),
             iswhite? get_score(false) : -10000-r
         }};

@@ -204,6 +204,7 @@ struct ChessBoard {
     // defined in moves.hpp
     vector<move_t> get_moves(ChessPiece* piece);
     bool is_check(bool iswhite);
+    bool is_checkmate(bool iswhite);
     void print_moves(ChessPiece* piece);
     void print_all_moves(bool iswhite);
     vector<move_pair_t> get_all_moves(bool iswhite);
