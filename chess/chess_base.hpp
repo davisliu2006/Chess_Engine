@@ -12,6 +12,8 @@
 
 #include "../headers/system.hpp"
 #include "../headers/rng.hpp"
+#define DEBUG_MODE
+#include "../headers/debug.hpp"
 
 using namespace std;
 
@@ -59,8 +61,8 @@ inline ostream& operator <<(ostream& out, const ChessPiece& piece) {
 
 // piece and move position pair
 struct move_pair_t {
-    ChessPiece* piece;
-    move_t move;
+    ChessPiece* piece = NULL;
+    move_t move = {0, 0};
 
     static move_pair_t INVALID() {return {NULL, {0, 0}};}
     bool is_invalid() const {return piece == NULL;}
@@ -73,8 +75,8 @@ inline ostream& operator <<(ostream& out, const move_pair_t& mp) {
 
 // move_pair and move score pair
 struct move_pair_score_t {
-    move_pair_t move_pair;
-    move_score_t move_score;\
+    move_pair_t move_pair = move_pair_t::INVALID();
+    move_score_t move_score = {0, 0};
 
     bool is_invalid() const {return move_pair.is_invalid();}
 };
@@ -86,17 +88,13 @@ inline ostream& operator <<(ostream& out, const move_pair_score_t& mps) {
 
 // CHESS BOARD
 struct ChessBoard {
-    ChessPiece* grid[8][8];
-    array<set<ChessPiece*>,2> pieces;
-    array<ChessPiece*,2> kings = {NULL, NULL};
+    array<array<ChessPiece*, 8>, 8> grid ;
+    array<set<ChessPiece*>, 2> pieces;
+    array<ChessPiece*, 2> kings = {NULL, NULL};
 
     // constructors
     ChessBoard() {
-        for (int i = 0; i < 8; i++) {
-            for (int j = 0; j < 8; j++) {
-                grid[i][j] = NULL;
-            }
-        }
+        for (auto& row: grid) {row.fill(NULL);}
     }
 
     ChessPiece*& pos(int x, int y) {
@@ -105,58 +103,64 @@ struct ChessBoard {
 
     // add piece
     void add_piece(bool iswhite, char type, int x, int y) {
+        debug_assert(0 <= x && x < 8 && 0 <= y && y < 8);
         ChessPiece* piece = new ChessPiece(iswhite, type);
         pieces[iswhite].insert(piece);
         grid[piece->x = x][piece->y = y] = piece;
         piece->onboard = true;
     }
-    void add_piece(ChessPiece* piece, int x, int y) {
-        pieces[piece->iswhite].insert(piece);
-        grid[piece->x = x][piece->y = y] = piece;
-        piece->onboard = true;
+    void add_piece(ChessPiece& piece, int x, int y) {
+        debug_assert(0 <= x && x < 8 && 0 <= y && y < 8);
+        pieces[piece.iswhite].insert(&piece);
+        grid[piece.x = x][piece.y = y] = &piece;
+        piece.onboard = true;
     }
 
     // remove piece
-    void rem_piece(ChessPiece* piece) {
-        pieces[piece->iswhite].erase(piece);
-        grid[piece->x][piece->y] = NULL;
-        piece->onboard = false;
+    void rem_piece(ChessPiece& piece) {
+        auto f = pieces[piece.iswhite].find(&piece);
+        debug_assert(f != pieces[piece.iswhite].end());
+        pieces[piece.iswhite].erase(f);
+        grid[piece.x][piece.y] = NULL;
+        piece.onboard = false;
     }
 
     // move piece
-    void move_piece(ChessPiece* piece, int x, int y) {
-        grid[piece->x][piece->y] = NULL;
-        grid[piece->x = x][piece->y = y] = piece;
+    void move_piece(ChessPiece& piece, int x, int y) {
+        debug_assert(0 <= x && x < 8 && 0 <= y && y < 8);
+        grid[piece.x][piece.y] = NULL;
+        grid[piece.x = x][piece.y = y] = &piece;
     }
     void move_piece(int x0, int y0, int x1, int y1) {
+        debug_assert(0 <= x0 && x0 < 8 && 0 <= y0 && y0 < 8);
+        debug_assert(0 <= x1 && x1 < 8 && 0 <= y1 && y1 < 8);
         ChessPiece* piece = grid[x0][y0];
+        debug_assert(piece);
         grid[x0][y0] = NULL;
         grid[piece->x = x1][piece->y = y1] = piece;
     }
 
     // clear board
     void clear() {
-        for (int i = 0; i < 8; i++) {
-            for (int j = 0; j < 8; j++) {
-                grid[i][j] = NULL;
-            }
+        for (auto& row: grid) {
+            row.fill(NULL);
         }
         pieces[0].clear(); pieces[1].clear();
         kings = {NULL, NULL};
     }
     // default set up board
     void default_setup() {
-        for (int a = 0; a <= 1; a++) {
-            add_piece(a, rook, 0, 7-7*a);
-            add_piece(a, knight, 1, 7-7*a);
-            add_piece(a, bishop, 2, 7-7*a);
-            add_piece(a, queen, 3, 7-7*a);
-            add_piece(a, king, 4, 7-7*a);
-            add_piece(a, bishop, 5, 7-7*a);
-            add_piece(a, knight, 6, 7-7*a);
-            add_piece(a, rook, 7, 7-7*a);
-            for (int b = 0; b < 8; b++) {
-                add_piece(a, pawn, b, 6-5*a);
+        for (int iw = 0; iw <= 1; iw++) {
+            add_piece(iw, rook, 0, 7-7*iw);
+            add_piece(iw, knight, 1, 7-7*iw);
+            add_piece(iw, bishop, 2, 7-7*iw);
+            add_piece(iw, queen, 3, 7-7*iw);
+            add_piece(iw, king, 4, 7-7*iw);
+            add_piece(iw, bishop, 5, 7-7*iw);
+            add_piece(iw, knight, 6, 7-7*iw);
+            add_piece(iw, rook, 7, 7-7*iw);
+            for (int i = 0; i < 8; i++) {
+                add_piece(iw, pawn, i, 6-5*iw);
             }
         }
     }
@@ -173,13 +177,13 @@ struct ChessBoard {
     // print pieces as list
     void print_pcs() {
         for (ChessPiece* piece: pieces[1]) {
-            if (not piece->onboard) {
+            if (!piece->onboard) {
                 cout << "-";
             }
             cout << piece->type << "1@" << piece->x << piece->y << " ";
         }
         for (ChessPiece* piece: pieces[0]) {
-            if (not piece->onboard) {
+            if (!piece->onboard) {
                 cout << "-";
             }
             cout << piece->type << "0@" << piece->x << piece->y << " ";
@@ -202,10 +206,10 @@ struct ChessBoard {
     }
 
     // defined in moves.hpp
-    vector<move_t> get_moves(ChessPiece* piece);
+    vector<move_t> get_moves(const ChessPiece& piece);
     bool is_check(bool iswhite);
     bool is_checkmate(bool iswhite);
-    void print_moves(ChessPiece* piece);
+    void print_moves(const ChessPiece& piece);
     void print_all_moves(bool iswhite);
     vector<move_pair_t> get_all_moves(bool iswhite);
 
