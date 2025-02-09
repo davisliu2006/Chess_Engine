@@ -10,8 +10,8 @@
         ChessPiece* captpiece = grid[move.first][move.second];
         int x0 = piece->x, y0 = piece->y; // save old state
         // test move
-        if (captpiece) {rem_piece(captpiece);}
-        move_piece(piece, move.first, move.second);
+        if (captpiece) {rem_piece(*captpiece);}
+        move_piece(*piece, move.first, move.second);
         if (r == 1) {
             val.push_back({{piece, move}, {get_score(true), get_score(false)}});
         } else {
@@ -23,8 +23,8 @@
             val.push_back({{piece, move}, bestmove.move_score});
         }
         // backtrack
-        move_piece(piece, x0, y0);
-        if (captpiece) {add_piece(captpiece, captpiece->x, captpiece->y);}
+        move_piece(*piece, x0, y0);
+        if (captpiece) {add_piece(*captpiece, captpiece->x, captpiece->y);}
     }
     return val;
 }
@@ -49,8 +49,8 @@ inline move_pair_score_t ChessBoard::get_best_move(int r, bool iswhite) {
         ChessPiece* captpiece = grid[move.first][move.second];
         int x0 = piece->x, y0 = piece->y; // save old state
         // test move
-        if (captpiece) {rem_piece(captpiece);} // capture
-        move_piece(piece, move.first, move.second);
+        if (captpiece) {rem_piece(*captpiece);} // capture
+        move_piece(*piece, move.first, move.second);
         if (r == 1) { // base case
             move_score_t score = {get_score(true), get_score(false)};
             double advantage = (score.first-score.second)*(iswhite? 1 : -1);
@@ -75,9 +75,9 @@ inline move_pair_score_t ChessBoard::get_best_move(int r, bool iswhite) {
             }
         }
         // backtrack
-        move_piece(piece, x0, y0);
+        move_piece(*piece, x0, y0);
         if (captpiece) { // un-capture
-            add_piece(captpiece, captpiece->x, captpiece->y);
+            add_piece(*captpiece, captpiece->x, captpiece->y);
         }
     }
     return vals[randint(0, vals.size()-1)];
