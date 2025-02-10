@@ -16,10 +16,10 @@ int main() {
     cout << "START PROGRAM" << endl;
     rng_init(time(NULL));
     ChessBoard board;
-    ifstream sample_in("chess/test_data/test1.txt");
-    assert(sample_in.is_open() && "Sample input file failed to open.");
-    sample_in >> board;
-    // board.default_setup();
+    // ifstream sample_in("chess/test_data/test1.txt");
+    // assert(sample_in.is_open() && "Sample input file failed to open.");
+    // sample_in >> board;
+    board.default_setup();
     bool white_turn = true;
     cout << "FINISH SETUP" << endl;
 
