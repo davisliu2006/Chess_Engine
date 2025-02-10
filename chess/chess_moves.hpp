@@ -32,7 +32,7 @@ inline vector<move_t> ChessBoard::get_moves(const ChessPiece& piece) {
         }
     }
         
-    else if (piece.type == knight) { // KNIGHT
+    if (piece.type == knight) { // KNIGHT
         for (int i = -1; i <= 1; i += 2) { // 1 hori, 2 vtc
             for (int j = -2; j <= 2; j += 4) {
                 x1 = x+i; y1 = y+j;
@@ -57,7 +57,7 @@ inline vector<move_t> ChessBoard::get_moves(const ChessPiece& piece) {
         }
     }
         
-    else if (piece.type == bishop or piece.type == queen) { // BISHOP or QUEEN
+    if (piece.type == bishop or piece.type == queen) { // BISHOP or QUEEN
         for (int i = 1; i <= 7; i++) { // down, left
             x1 = x-i; y1 = y-i;
             if (x1 >= 0 && y1 >= 0) { // in range
@@ -112,7 +112,7 @@ inline vector<move_t> ChessBoard::get_moves(const ChessPiece& piece) {
         }
     }
         
-    else if (piece.type == rook or piece.type == queen) { // ROOK or QUEEN
+    if (piece.type == rook or piece.type == queen) { // ROOK or QUEEN
         for (int i = 1; i <= 7; i++) { // left
             x1 = x-i; y1 = y;
             if (x1 >= 0) { // in range
@@ -167,7 +167,7 @@ inline vector<move_t> ChessBoard::get_moves(const ChessPiece& piece) {
         }
     }
         
-    else if (piece.type == king) { // KING
+    if (piece.type == king) { // KING
         for (int i = -1; i <= 1; i++) {
             for (int j = -1; j <= 1; j++) {
                 x1 = x+i; y1 = y+j;

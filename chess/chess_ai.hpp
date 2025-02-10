@@ -41,16 +41,17 @@ inline move_pair_score_t ChessBoard::get_best_move(int r, bool iswhite) {
     vector<move_pair_t> moves = get_all_moves(iswhite); // get all possible moves
     if (moves.size() == 0) { // no valid moves, LOSE
         return {move_pair_t::INVALID(), { // losing slightly later (lower "r") is better
-            iswhite? -10000-r : get_score(true),
-            iswhite? get_score(false) : -10000-r
+            iswhite? -10000-r*10 : get_score(false),
+            iswhite? get_score(true) : -10000-r*10
         }};
     }
-    for (auto& [piece, move]: moves) { // check score for each move
-        ChessPiece* captpiece = grid[move.first][move.second];
+    for (const auto& [piece, move]: moves) { // check score for each move
+        const auto& [x, y] = move;
+        ChessPiece* captpiece = grid[x][y];
         int x0 = piece->x, y0 = piece->y; // save old state
         // test move
         if (captpiece) {rem_piece(*captpiece);} // capture
-        move_piece(*piece, move.first, move.second);
+        move_piece(*piece, x, y);
         if (r == 1) { // base case
             move_score_t score = {get_score(true), get_score(false)};
             double advantage = (score.first-score.second)*(iswhite? 1 : -1);
