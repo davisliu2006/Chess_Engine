@@ -36,14 +36,18 @@ inline playstyle_e playstyle = NEUTRAL;
 
 // search best move with recursion depth "r"
 inline move_pair_score_t ChessBoard::get_best_move(int r, bool iswhite) {
+    // DEFINE MACROS
+    #define LOSE_SCORE { \
+        iswhite? -10000-r*10 : get_score(false), \
+        iswhite? get_score(true) : -10000-r*10 \
+    }
+    #define STALEMATE_SCORE {-10000, -10000}
+
     vector<move_pair_score_t> vals; // all "best moves"
     double best_advatage = -1e9; // best score difference
     vector<move_pair_t> moves = get_all_moves(iswhite); // get all possible moves
     if (moves.size() == 0) { // no valid moves, LOSE
-        return {move_pair_t::INVALID(), { // losing slightly later (lower "r") is better
-            iswhite? -10000-r*10 : get_score(false),
-            iswhite? get_score(true) : -10000-r*10
-        }};
+        return {move_pair_t::INVALID(), LOSE_SCORE};
     }
     for (const auto& [piece, move]: moves) { // check score for each move
         const auto& [x, y] = move;
@@ -52,6 +56,14 @@ inline move_pair_score_t ChessBoard::get_best_move(int r, bool iswhite) {
         // test move
         if (captpiece) {rem_piece(*captpiece);} // capture
         move_piece(*piece, x, y);
+        if (is_check(iswhite)) { // if illegal, END CHECK
+            // backtrack
+            move_piece(*piece, x0, y0);
+            if (captpiece) { // un-capture
+                add_piece(*captpiece, captpiece->x, captpiece->y);
+            }
+            continue;
+        }
         if (r == 1) { // base case
             move_score_t score = {get_score(true), get_score(false)};
             double advantage = (score.first-score.second)*(iswhite? 1 : -1);
@@ -81,5 +93,13 @@ inline move_pair_score_t ChessBoard::get_best_move(int r, bool iswhite) {
             add_piece(*captpiece, captpiece->x, captpiece->y);
         }
     }
+    if (vals.size() == 0) {
+        if (is_check(iswhite)) {return {move_pair_t::INVALID(), LOSE_SCORE};}
+        else return {move_pair_t::INVALID(), STALEMATE_SCORE};
+    }
     return vals[randint(0, vals.size()-1)];
+
+    // UNDEFINE MACROS
+    #undef LOSE_SCORE
+    #undef STALEMATE_SCORE
 }

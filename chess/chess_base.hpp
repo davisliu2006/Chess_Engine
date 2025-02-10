@@ -2,9 +2,7 @@
 
 #include <array>
 #include <iostream>
-#include <list>
 #include <map>
-#include <queue>
 #include <set>
 #include <unordered_map>
 #include <unordered_set>
@@ -102,18 +100,15 @@ struct ChessBoard {
     }
 
     // add piece
-    void add_piece(bool iswhite, char type, int x, int y) {
-        debug_assert(0 <= x && x < 8 && 0 <= y && y < 8);
-        ChessPiece* piece = new ChessPiece(iswhite, type);
-        pieces[iswhite].insert(piece);
-        grid[piece->x = x][piece->y = y] = piece;
-        piece->onboard = true;
-    }
     void add_piece(ChessPiece& piece, int x, int y) {
         debug_assert(0 <= x && x < 8 && 0 <= y && y < 8);
         pieces[piece.iswhite].insert(&piece);
         grid[piece.x = x][piece.y = y] = &piece;
         piece.onboard = true;
+    }
+    void add_piece(bool iswhite, char type, int x, int y) {
+        ChessPiece* piece = new ChessPiece(iswhite, type);
+        add_piece(*piece, x, y);
     }
 
     // remove piece
@@ -163,6 +158,7 @@ struct ChessBoard {
                 add_piece(iw, pawn, i, 6-5*iw);
             }
         }
+        kings = {grid[4][7], grid[4][0]};
     }
 
     // get score for either side

@@ -14,8 +14,13 @@ inline istream& operator >>(istream& in, ChessBoard& board) {
                 char type = pcstr[0];
                 bool iswhite = (pcstr[1] == '1');
                 board.add_piece(iswhite, type, j, i);
+                if (type == king) {
+                    assert(!board.kings[iswhite] && "Board cannot have more than one king.");
+                    board.kings[iswhite] = board.grid[j][i];
+                }
             }
         }
     }
+    assert(board.kings[0] && board.kings[1] && "Board must have exactly two kings.");
     return in;
 }

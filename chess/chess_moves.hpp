@@ -62,8 +62,10 @@ inline vector<move_t> ChessBoard::get_moves(const ChessPiece& piece) {
             x1 = x-i; y1 = y-i;
             if (x1 >= 0 && y1 >= 0) { // in range
                 ChessPiece* captpiece = grid[x1][y1];
-                if (!captpiece || captpiece->iswhite != iswhite) { // empty or capture
+                if (!captpiece) { // empty
                     moves.push_back({x1, y1});
+                } else if (captpiece->iswhite != iswhite) { // capture
+                    moves.push_back({x1, y1}); break;
                 } else { // blocked
                     break;
                 }
@@ -75,8 +77,10 @@ inline vector<move_t> ChessBoard::get_moves(const ChessPiece& piece) {
             x1 = x-i; y1 = y+i;
             if (x1 >= 0 && y1 <= 7) { // in range
                 ChessPiece* captpiece = grid[x1][y1];
-                if (!captpiece || captpiece->iswhite != iswhite) { // empty or capture
+                if (!captpiece) { // empty
                     moves.push_back({x1, y1});
+                } else if (captpiece->iswhite != iswhite) { // capture
+                    moves.push_back({x1, y1}); break;
                 } else { // blocked
                     break;
                 }
@@ -88,8 +92,10 @@ inline vector<move_t> ChessBoard::get_moves(const ChessPiece& piece) {
             x1 = x+i; y1 = y-i;
             if (x1 <= 7 && y1 >= 0) { // in range
                 ChessPiece* captpiece = grid[x1][y1];
-                if (!captpiece || captpiece->iswhite != iswhite) { // empty or capture
+                if (!captpiece) { // empty
                     moves.push_back({x1, y1});
+                } else if (captpiece->iswhite != iswhite) { // capture
+                    moves.push_back({x1, y1}); break;
                 } else { // blocked
                     break;
                 }
@@ -101,8 +107,10 @@ inline vector<move_t> ChessBoard::get_moves(const ChessPiece& piece) {
             x1 = x+i; y1 = y+i;
             if (x1 <= 7 && y1 <= 7) { // in range
                 ChessPiece* captpiece = grid[x1][y1];
-                if (!captpiece || captpiece->iswhite != iswhite) { // empty or capture
+                if (!captpiece) { // empty
                     moves.push_back({x1, y1});
+                } else if (captpiece->iswhite != iswhite) { // capture
+                    moves.push_back({x1, y1}); break;
                 } else { // blocked
                     break;
                 }
@@ -117,8 +125,10 @@ inline vector<move_t> ChessBoard::get_moves(const ChessPiece& piece) {
             x1 = x-i; y1 = y;
             if (x1 >= 0) { // in range
                 ChessPiece* captpiece = grid[x1][y1];
-                if (!captpiece || captpiece->iswhite != iswhite) { // empty or capture
+                if (!captpiece) { // empty
                     moves.push_back({x1, y1});
+                } else if (captpiece->iswhite != iswhite) { // capture
+                    moves.push_back({x1, y1}); break;
                 } else { // blocked
                     break;
                 }
@@ -130,8 +140,10 @@ inline vector<move_t> ChessBoard::get_moves(const ChessPiece& piece) {
             x1 = x+i; y1 = y;
             if (x1 <= 7) { // in range
                 ChessPiece* captpiece = grid[x1][y1];
-                if (!captpiece || captpiece->iswhite != iswhite) { // empty or capture
+                if (!captpiece) { // empty
                     moves.push_back({x1, y1});
+                } else if (captpiece->iswhite != iswhite) { // capture
+                    moves.push_back({x1, y1}); break;
                 } else { // blocked
                     break;
                 }
@@ -143,8 +155,10 @@ inline vector<move_t> ChessBoard::get_moves(const ChessPiece& piece) {
             x1 = x; y1 = y-i;
             if (y1 >= 0) { // in range
                 ChessPiece* captpiece = grid[x1][y1];
-                if (!captpiece || captpiece->iswhite != iswhite) { // empty or capture
+                if (!captpiece) { // empty
                     moves.push_back({x1, y1});
+                } else if (captpiece->iswhite != iswhite) { // capture
+                    moves.push_back({x1, y1}); break;
                 } else { // blocked
                     break;
                 }
@@ -156,8 +170,10 @@ inline vector<move_t> ChessBoard::get_moves(const ChessPiece& piece) {
             x1 = x; y1 = y+i;
             if (y1 <= 7) { // in range
                 ChessPiece* captpiece = grid[x1][y1];
-                if (!captpiece || captpiece->iswhite != iswhite) { // empty or capture
+                if (!captpiece) { // empty
                     moves.push_back({x1, y1});
+                } else if (captpiece->iswhite != iswhite) { // capture
+                    moves.push_back({x1, y1}); break;
                 } else { // blocked
                     break;
                 }
@@ -186,6 +202,7 @@ inline vector<move_t> ChessBoard::get_moves(const ChessPiece& piece) {
 // check if side is "in check"
 inline bool ChessBoard::is_check(bool iswhite) {
     ChessPiece* king = kings[iswhite];
+    assert(king && "Board does not have king.");
     for (ChessPiece* piece: pieces[!iswhite]) { // for each opposing piece
         vector<move_t> moves = get_moves(*piece);
         for (const auto& [mx, my]: moves) { // for each move
@@ -205,13 +222,14 @@ inline bool ChessBoard::is_check(bool iswhite) {
 inline void ChessBoard::print_moves(const ChessPiece& piece) {
     vector<move_t> moves = get_moves(piece);
     for (const auto& [mx, my]: moves) {
-        cout << mx << " " << my << '\n';
+        cout << mx << my << ' ';
     }
+    cout << '\n';
 }
 // print moves for all pieces on a side
 inline void ChessBoard::print_all_moves(bool iswhite) {
     for (ChessPiece* pc: ChessBoard::pieces[iswhite]) {
-        cout << pc->x << pc->y << '\n';
+        cout << pc->type << pc->iswhite << '@' << pc->x << pc->y << ": ";
         ChessBoard::print_moves(*pc);
     }
 }
