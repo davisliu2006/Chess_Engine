@@ -9,7 +9,7 @@ inline istream& operator >>(istream& in, ChessBoard& board) {
             in >> pcstr;
             cout << pcstr << (j == 7? '\n' : ' ') << flush;
             if (pcstr[0] == '-') {
-                //
+                // do nothing
             } else {
                 char type = pcstr[0];
                 bool iswhite = (pcstr[1] == '1');
