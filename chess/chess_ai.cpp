@@ -1,6 +1,6 @@
 #pragma once
 
-#include "chess_moves.hpp"
+#include "chess_base.hpp"
 
 namespace chess {
     enum playstyle_e {
@@ -9,7 +9,7 @@ namespace chess {
     inline playstyle_e playstyle = NEUTRAL;
 
     // search best move with recursion depth "r"
-    inline move_pair_score_t ChessBoard::get_best_move(int r, bool iswhite) {
+    move_pair_score_t ChessBoard::get_best_move(int r, bool iswhite) {
         // DEFINE MACROS
         #define LOSE_SCORE { \
             iswhite? -10000-r*10 : get_score(false), \
@@ -79,7 +79,7 @@ namespace chess {
     }
 
     // WIP
-    [[deprecated]] inline vector<move_pair_score_t> ChessBoard::get_move_scores(int r, bool iswhite) {
+    [[deprecated]] vector<move_pair_score_t> ChessBoard::get_move_scores(int r, bool iswhite) {
         vector<move_pair_score_t> val;
         vector<move_pair_t> moves = get_all_moves(iswhite);
         for (auto& [piece, move]: moves) {

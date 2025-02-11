@@ -221,6 +221,7 @@ namespace chess {
         vector<move_pair_t> get_all_moves(bool iswhite);
 
         // defined in chess_ai.hpp
+        int64_t compress_state();
         vector<move_pair_score_t> get_move_scores(int r, bool iswhite);
         move_pair_score_t get_best_move(int r, bool iswhite);
     };

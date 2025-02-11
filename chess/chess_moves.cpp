@@ -4,7 +4,7 @@
 
 namespace chess {
     // get all moves for a piece
-    inline vector<move_t> ChessBoard::get_moves(const ChessPiece& piece) {
+    vector<move_t> ChessBoard::get_moves(const ChessPiece& piece) {
         const int& x = piece.x;
         const int& y = piece.y;
         const bool& iswhite = piece.iswhite;
@@ -201,7 +201,7 @@ namespace chess {
     }
 
     // check if side is "in check"
-    inline bool ChessBoard::is_check(bool iswhite) {
+    bool ChessBoard::is_check(bool iswhite) {
         ChessPiece* king = kings[iswhite];
         assert(king && "Board does not have king.");
         for (ChessPiece* piece: pieces[!iswhite]) { // for each opposing piece
@@ -220,7 +220,7 @@ namespace chess {
     }
 
     // print moves for a piece
-    inline void ChessBoard::print_moves(const ChessPiece& piece) {
+    void ChessBoard::print_moves(const ChessPiece& piece) {
         vector<move_t> moves = get_moves(piece);
         for (const auto& [mx, my]: moves) {
             cout << mx << my << ' ';
@@ -228,7 +228,7 @@ namespace chess {
         cout << '\n';
     }
     // print moves for all pieces on a side
-    inline void ChessBoard::print_all_moves(bool iswhite) {
+    void ChessBoard::print_all_moves(bool iswhite) {
         for (ChessPiece* pc: ChessBoard::pieces[iswhite]) {
             cout << pc->type << pc->iswhite << '@' << pc->x << pc->y << ": ";
             ChessBoard::print_moves(*pc);
@@ -236,7 +236,7 @@ namespace chess {
     }
 
     // get all moves for a side
-    inline vector<move_pair_t> ChessBoard::get_all_moves(bool iswhite) {
+    vector<move_pair_t> ChessBoard::get_all_moves(bool iswhite) {
         vector<move_pair_t> val;
         for (ChessPiece* pc: ChessBoard::pieces[iswhite]) {
             vector<move_t> moves = get_moves(*pc);
