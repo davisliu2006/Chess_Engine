@@ -31,11 +31,6 @@ namespace chess {
         bishop = 'b', rook = 'r',
         queen = 'Q', king = 'K'
     };
-    // significance values of each piece type
-    inline map<char,double> pieceval = {
-        {pawn, 1}, {knight, 3}, {bishop, 3},
-        {rook, 5}, {queen, 10}, {king, 1000}
-    };
 
     //CLASSES
 
@@ -172,15 +167,6 @@ namespace chess {
             kings = {grid[4][7], grid[4][0]};
         }
 
-        // get score for either side
-        double get_score(bool iswhite) {
-            double val = 0;
-            for (ChessPiece* piece: pieces[iswhite]) {
-                val += pieceval[piece->type];
-            }
-            return val;
-        }
-
         // print pieces as list
         void print_pcs() {
             for (ChessPiece* piece: pieces[1]) {
@@ -212,7 +198,7 @@ namespace chess {
             }
         }
 
-        // defined in moves.hpp
+        // defined in chess_moves.cpp
         vector<move_t> get_moves(const ChessPiece& piece);
         bool is_check(bool iswhite);
         bool is_checkmate(bool iswhite);
@@ -220,9 +206,10 @@ namespace chess {
         void print_all_moves(bool iswhite);
         vector<move_pair_t> get_all_moves(bool iswhite);
 
-        // defined in chess_ai.hpp
+        // defined in chess_ai.cpp
+        double get_score(bool iswhite);
         int64_t compress_state();
-        vector<move_pair_score_t> get_move_scores(int r, bool iswhite);
         move_pair_score_t get_best_move(int r, bool iswhite);
+        vector<move_pair_score_t> get_move_scores(int r, bool iswhite);
     };
 }

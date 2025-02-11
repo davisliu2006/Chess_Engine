@@ -9,6 +9,7 @@
 #include "chess/chess.hpp"
 
 using namespace std;
+using namespace chess;
 
 //MAIN
 

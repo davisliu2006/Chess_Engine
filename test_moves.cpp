@@ -9,6 +9,7 @@
 #include "chess/chess.hpp"
 
 using namespace std;
+using namespace chess;
 
 //MAIN
 
@@ -20,7 +21,7 @@ int main() {
     assert(sample_in.is_open() && "Sample input file failed to open.");
 
     while (!sample_in.eof()) {
-        board = ChessBoard(); // reset board before input
+        board.clear(); // reset board before input
         sample_in >> board;
         bool white_turn = true;
         cout << "FINISH SETUP" << endl;
