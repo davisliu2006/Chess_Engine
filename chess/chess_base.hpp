@@ -17,8 +17,10 @@ using namespace std;
 
 // DEFINITIONS
 
-using move_t = pair<int,int>; // x and y
-using move_score_t = pair<double,double>; // white and black score
+// pair of x and y coordinates
+using move_t = pair<int,int>;
+// pair of white and black score, respectively
+using move_score_t = pair<double,double>;
 
 // piece type identifiers
 enum piece_e : char {
@@ -57,7 +59,10 @@ inline ostream& operator <<(ostream& out, const ChessPiece& piece) {
     return out << piece.type << piece.iswhite << '@' << piece.x << piece.y;
 }
 
-// piece and move position pair
+// MOVE PAIR
+/*
+Pair containing chess piece and move position.
+*/
 struct move_pair_t {
     ChessPiece* piece = NULL;
     move_t move = {0, 0};
@@ -71,7 +76,10 @@ inline ostream& operator <<(ostream& out, const move_pair_t& mp) {
     return out << *mp.piece << " to " << mp.move.first << mp.move.second;
 }
 
-// move_pair and move score pair
+// MOVE PAIR SCORE
+/*
+Pair containing move_pair_t and move_score_t.
+*/
 struct move_pair_score_t {
     move_pair_t move_pair = move_pair_t::INVALID();
     move_score_t move_score = {0, 0};
