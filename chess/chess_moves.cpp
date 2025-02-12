@@ -1,3 +1,8 @@
+/*
+chess_moves.hpp
+Defines move calculation implementation.
+*/
+
 #include "chess_base.hpp"
 
 using namespace std;

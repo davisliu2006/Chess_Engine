@@ -1,9 +1,15 @@
+/*
+chess_ai.cpp
+Defines AI algorithm implementation.
+*/
+
 #include "chess_base.hpp"
 #include "chess_ai.hpp"
 #include "../headers/math.hpp"
 
 using namespace std;
 using namespace chess;
+using namespace chess::chess_ai;
 
 // 0 is black square, 1 is white square
 bool square_parity(int x, int y) {
@@ -19,7 +25,7 @@ double ChessBoard::get_score(bool iswhite) const {
     int bishop_color = 0; // special rules: bishop
 
     for (ChessPiece* piece: pieces[iswhite]) { // check all pieces
-        val += piece_val[piece->type]; // material value
+        val += PIECE_VAL[piece->type]; // material value
         ChessPiece* opp_king = kings[!iswhite];
         aggression += dist(piece->x, piece->y, opp_king->x, opp_king->y);
 
@@ -34,17 +40,17 @@ double ChessBoard::get_score(bool iswhite) const {
     // special rules: pawns
     for (int i = 0; i <= 7; i++) {
         if (pawn_count[i] >= 2) { // pawn stack unfavorable
-            val -= (pawn_count[i]-1) * (piece_val[pawn]*0.5);
+            val -= (pawn_count[i]-1)*PAWN_STACK_PENALTY;
         }
         if ((i == 0 || pawn_count[i-1] == 0)
         && (i == 7 || pawn_count[i+1] == 0)) { // isolated pawn unfavorable
-            val -= piece_val[pawn]*0.5;
+            val -= PAWN_ISOLATE_PENALTY;
         }
     }
     // special rules: bishops
-    val += (bishop_color == 3); // favour oposite-parity bishops
+    val += (bishop_color == 3)*BISHOP_PARITY_BONUS; // favour oposite-parity bishops
 
-    aggression = 1 / (aggression/pieces[iswhite].size());
+    aggression = AGGRESSION_FACTOR / (aggression/pieces[iswhite].size());
     val += aggression;
     return val;
 }
@@ -86,8 +92,8 @@ move_pair_score_t ChessBoard::get_best_move(int r, bool iswhite) {
         }
         if (r == 1) { // base case
             move_score_t score = {
-                get_score(true) + nmoves_w*pos_weighting, // material + position
-                get_score(false) + nmoves_b*pos_weighting // material + position
+                get_score(true) + nmoves_w*POS_FACTOR, // material + position
+                get_score(false) + nmoves_b*POS_FACTOR // material + position
             };
             double advantage = (score.first-score.second)*(iswhite? 1 : -1);
             if (advantage > best_advatage) { // better than current
