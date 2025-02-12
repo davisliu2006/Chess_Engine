@@ -2,6 +2,7 @@
 .vscode/
 bin/
 */bin/
+test/
 
 # files
 .DS_Store

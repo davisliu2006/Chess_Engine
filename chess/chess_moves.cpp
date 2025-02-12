@@ -1,5 +1,6 @@
 #include "chess_base.hpp"
 
+using namespace std;
 using namespace chess;
 
 // get all moves for a piece

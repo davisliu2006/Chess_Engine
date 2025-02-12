@@ -1,20 +1,58 @@
 #include "chess_base.hpp"
 #include "chess_ai.hpp"
+#include "../headers/math.hpp"
 
+using namespace std;
 using namespace chess;
 
-// get score for either side
-double ChessBoard::get_score(bool iswhite) {
-    double val = 0;
-    for (ChessPiece* piece: pieces[iswhite]) {
-        val += pieceval[piece->type];
+// 0 is black square, 1 is white square
+bool square_parity(int x, int y) {
+    return (x+y)%2;
+}
+
+// get score for either side, not accounting for move possibilities
+double ChessBoard::get_score(bool iswhite) const {
+    double val = 0; // score value
+    double aggression = 0; // const / avg proximity to king
+
+    array<int,8> pawn_count; // special rules: pawns
+    int bishop_color = 0; // special rules: bishop
+
+    for (ChessPiece* piece: pieces[iswhite]) { // check all pieces
+        val += piece_val[piece->type]; // material value
+        ChessPiece* opp_king = kings[!iswhite];
+        aggression += dist(piece->x, piece->y, opp_king->x, opp_king->y);
+
+        if (piece->type == pawn) { // special rules: pawns
+            pawn_count[piece->x]++;
+        }
+        if (piece->type == bishop) { // special rules: bishops
+            bishop_color |= (square_parity(piece->x, piece->y)? 1 : 2);
+        }
     }
+
+    // special rules: pawns
+    for (int i = 0; i <= 7; i++) {
+        if (pawn_count[i] >= 2) { // pawn stack unfavorable
+            val -= (pawn_count[i]-1) * (piece_val[pawn]*0.5);
+        }
+        if ((i == 0 || pawn_count[i-1] == 0)
+        && (i == 7 || pawn_count[i+1] == 0)) { // isolated pawn unfavorable
+            val -= piece_val[pawn]*0.5;
+        }
+    }
+    // special rules: bishops
+    val += (bishop_color == 3); // favour oposite-parity bishops
+
+    aggression = 1 / (aggression/pieces[iswhite].size());
+    val += aggression;
     return val;
 }
 
 // search best move with recursion depth "r"
 move_pair_score_t ChessBoard::get_best_move(int r, bool iswhite) {
     // DEFINE MACROS
+    // losing later is better (lower "r")
     #define LOSE_SCORE { \
         iswhite? -10000-r*10 : get_score(false), \
         iswhite? get_score(true) : -10000-r*10 \
@@ -22,8 +60,12 @@ move_pair_score_t ChessBoard::get_best_move(int r, bool iswhite) {
     #define STALEMATE_SCORE {-10000, -10000}
 
     vector<move_pair_score_t> vals; // all "best moves"
+    vals.reserve(10);
     double best_advatage = -1e9; // best score difference
     vector<move_pair_t> moves = get_all_moves(iswhite); // get all possible moves
+    vector<move_pair_t> opp_moves = get_all_moves(iswhite); // for position scoring
+    int nmoves_w = (iswhite? moves.size() : opp_moves.size()); // for position scoring
+    int nmoves_b = (iswhite? opp_moves.size() : moves.size()); // for position scoring
     if (moves.size() == 0) { // no valid moves, LOSE
         return {move_pair_t::INVALID(), LOSE_SCORE};
     }
@@ -43,7 +85,10 @@ move_pair_score_t ChessBoard::get_best_move(int r, bool iswhite) {
             continue;
         }
         if (r == 1) { // base case
-            move_score_t score = {get_score(true), get_score(false)};
+            move_score_t score = {
+                get_score(true) + nmoves_w*pos_weighting, // material + position
+                get_score(false) + nmoves_b*pos_weighting // material + position
+            };
             double advantage = (score.first-score.second)*(iswhite? 1 : -1);
             if (advantage > best_advatage) { // better than current
                 best_advatage = advantage;
@@ -71,11 +116,11 @@ move_pair_score_t ChessBoard::get_best_move(int r, bool iswhite) {
             add_piece(*captpiece, captpiece->x, captpiece->y);
         }
     }
-    if (vals.size() == 0) {
+    if (vals.size() == 0) { // no valid moves, LOSE or STALEMATE
         if (is_check(iswhite)) {return {move_pair_t::INVALID(), LOSE_SCORE};}
         else return {move_pair_t::INVALID(), STALEMATE_SCORE};
     }
-    return vals[randint(0, vals.size()-1)];
+    return vals[randint(0, vals.size()-1)]; // return random from list of best
 
     // UNDEFINE MACROS
     #undef LOSE_SCORE
