@@ -1,3 +1,7 @@
+/*
+chess_debug.hpp
+*/
+
 #pragma once
 
 #include "chess_base.hpp"

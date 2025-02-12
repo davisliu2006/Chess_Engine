@@ -1,3 +1,8 @@
+/*
+chess_base.hpp
+Defines base classes for chess library.
+*/
+
 #pragma once
 
 #include <array>
