@@ -101,10 +101,6 @@ namespace chess {
             for (auto& row: grid) {row.fill(NULL);}
         }
 
-        ChessPiece*& pos(int x, int y) {
-            return grid[x][y];
-        }
-
         // add piece
         void add_piece(ChessPiece& piece, int x, int y) {
             debug_assert(0 <= x && x < 8 && 0 <= y && y < 8);
@@ -168,7 +164,7 @@ namespace chess {
         }
 
         // print pieces as list
-        void print_pcs() {
+        void print_pcs() const {
             for (ChessPiece* piece: pieces[1]) {
                 if (!piece->onboard) {
                     cout << "-";
@@ -181,10 +177,10 @@ namespace chess {
                 }
                 cout << piece->type << "0@" << piece->x << piece->y << " ";
             }
-            cout << '\n';
+            cout << '\n' << std::flush;
         }
         // print board as grid
-        void print_board() {
+        void print_board() const {
             for (int i = 7; i >= 0; i--) {
                 for (int j = 0; j <= 7; j++) {
                     ChessPiece* piece = grid[j][i];
@@ -196,20 +192,20 @@ namespace chess {
                 }
                 cout << '\n';
             }
+            cout << std::flush;
         }
 
         // defined in chess_moves.cpp
         vector<move_t> get_moves(const ChessPiece& piece);
         bool is_check(bool iswhite);
-        bool is_checkmate(bool iswhite);
+        [[deprecated]] bool is_checkmate(bool iswhite);
         void print_moves(const ChessPiece& piece);
         void print_all_moves(bool iswhite);
         vector<move_pair_t> get_all_moves(bool iswhite);
 
         // defined in chess_ai.cpp
-        double get_score(bool iswhite);
-        int64_t compress_state();
+        double get_score(bool iswhite) const;
         move_pair_score_t get_best_move(int r, bool iswhite);
-        vector<move_pair_score_t> get_move_scores(int r, bool iswhite);
+        [[deprecated]] vector<move_pair_score_t> get_move_scores(int r, bool iswhite);
     };
 }

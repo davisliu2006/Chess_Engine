@@ -24,14 +24,14 @@ int main() {
     bool white_turn = true;
     cout << "FINISH SETUP" << endl;
 
-    for (int i = 0; i < 7; i++) {
+    for (int i = 0; i < 20; i++) {
         board.print_board();
         board.print_pcs();
         // cout << "White moves:\n";
         // board.print_all_moves(true);
         // cout << "Black moves:\n";
         // board.print_all_moves(false);
-        move_pair_score_t best_mps = board.get_best_move(5, white_turn);
+        move_pair_score_t best_mps = board.get_best_move(4, white_turn);
         cout << best_mps << '\n';
         if (best_mps.is_invalid()) {return 0;}
         auto& [move_pair, move_score] = best_mps;
