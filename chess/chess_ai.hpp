@@ -17,7 +17,7 @@ namespace chess {
         // significance of having more moves availible
         inline double POS_FACTOR = 0.1;
         // significance of advancing
-        inline double AGGRESSION_FACTOR = 1;
+        inline double AGGRESSION_FACTOR = 3;
         
         // special rules
         inline double PAWN_STACK_PENALTY = 0.5; // pawn stack unfavorable
