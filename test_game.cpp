@@ -42,6 +42,7 @@ int main() {
         board.move_piece(*piece, move.first, move.second);
 
         white_turn = !white_turn;
+        cout << '\n';
     }
 
     return 0;

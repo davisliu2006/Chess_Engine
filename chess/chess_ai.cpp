@@ -21,7 +21,7 @@ double ChessBoard::get_score(bool iswhite) const {
     double val = 0; // score value
     double aggression = 0; // const / avg proximity to king
 
-    array<int,8> pawn_count; // special rules: pawns
+    array<int,8> pawn_count = {}; // special rules: pawns
     int bishop_color = 0; // special rules: bishop
 
     for (ChessPiece* piece: pieces[iswhite]) { // check all pieces

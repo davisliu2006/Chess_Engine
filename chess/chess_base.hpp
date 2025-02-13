@@ -186,9 +186,10 @@ namespace chess {
         }
         // print board as grid
         void print_board() const {
-            for (int i = 7; i >= 0; i--) {
-                for (int j = 0; j <= 7; j++) {
-                    ChessPiece* piece = grid[j][i];
+            for (int y = 7; y >= 0; y--) {
+                cout << y << " ";
+                for (int x = 0; x <= 7; x++) {
+                    ChessPiece* piece = grid[x][y];
                     if (piece) {
                         cout << piece->type << piece->iswhite << " ";
                     } else {
@@ -196,6 +197,10 @@ namespace chess {
                     }
                 }
                 cout << '\n';
+            }
+            cout << "  ";
+            for (int x = 0; x <= 7; x++) {
+                cout << x << "  ";
             }
             cout << std::flush;
         }
