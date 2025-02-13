@@ -24,24 +24,49 @@ int main() {
     bool white_turn = true;
     cout << "FINISH SETUP" << endl;
 
-    for (int i = 0; i < 20; i++) {
+    array<bool,2> is_computer = {true, false};
+    while (true) {
         board.print_board();
         board.print_pcs();
-        // cout << "White moves:\n";
-        // board.print_all_moves(true);
-        // cout << "Black moves:\n";
-        // board.print_all_moves(false);
-        move_pair_score_t best_mps = board.get_best_move(4, white_turn);
-        cout << best_mps << '\n';
-        if (best_mps.is_invalid()) {return 0;}
-        auto& [move_pair, move_score] = best_mps;
-        auto& [piece, move] = move_pair;
 
-        ChessPiece* captpiece = board.grid[move.first][move.second];
-        if (captpiece) {board.rem_piece(*captpiece);}
-        board.move_piece(*piece, move.first, move.second);
+        if (is_computer[white_turn]) {
+            move_pair_score_t best_mps = board.get_best_move(4, white_turn);
+            cout << best_mps << '\n';
+            if (best_mps.is_invalid()) {return 0;}
+            auto& [move_pair, move_score] = best_mps;
+            auto& [piece, move] = move_pair;
+
+            ChessPiece* captpiece = board.grid[move.first][move.second];
+            if (captpiece) {board.rem_piece(*captpiece);}
+            board.move_piece(*piece, move.first, move.second);
+        } else {
+            cout << "Player turn to move <x0, y0, x1, y1>: ";
+            int x0 = -1, y0 = -1, x1 = -1, y1 = -1;
+            vector<move_pair_t> moves = board.get_all_moves(white_turn);
+            const move_pair_t* selected = NULL;
+            while (true) {
+                cin >> x0 >> y0 >> x1 >> y1;
+                cin.ignore(1e5, '\n');
+                for (const auto& move_pair: moves) {
+                    const auto& [piece, move] = move_pair;
+                    if (x0 == piece->x && y0 == piece->y
+                    && x1 == move.first && y1 == move.second) {
+                        selected = &move_pair;
+                        break;
+                    }
+                }
+                if (selected) {break;}
+                cout << "Invalid move\n";
+            }
+
+            const auto& [piece, move] = *selected;
+            ChessPiece* captpiece = board.grid[move.first][move.second];
+            if (captpiece) {board.rem_piece(*captpiece);}
+            board.move_piece(*piece, move.first, move.second);
+        }
 
         white_turn = !white_turn;
+        cout << '\n';
     }
 
     return 0;
