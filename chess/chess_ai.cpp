@@ -59,19 +59,15 @@ double ChessBoard::get_score(bool iswhite) const {
 move_pair_score_t ChessBoard::get_best_move(int r, bool iswhite) {
     // DEFINE MACROS
     // losing later is better (lower "r")
-    #define LOSE_SCORE { \
-        iswhite? -10000-r*10 : get_score(false), \
-        iswhite? get_score(true) : -10000-r*10 \
-    }
-    #define STALEMATE_SCORE {-10000, -10000}
+    #define LOSE_SCORE -10000-r*10 - get_score(!iswhite)
+    #define STALEMATE_SCORE 0
 
     vector<move_pair_score_t> vals; // all "best moves"
     vals.reserve(10);
     double best_advatage = -1e9; // best score difference
     vector<move_pair_t> moves = get_all_moves(iswhite); // get all possible moves
     vector<move_pair_t> opp_moves = get_all_moves(iswhite); // for position scoring
-    int nmoves_w = (iswhite? moves.size() : opp_moves.size()); // for position scoring
-    int nmoves_b = (iswhite? opp_moves.size() : moves.size()); // for position scoring
+    int pos_adv = moves.size()-opp_moves.size(); // for position scoring
     if (moves.size() == 0) { // no valid moves, LOSE
         return {move_pair_t::INVALID(), LOSE_SCORE};
     }
@@ -91,11 +87,9 @@ move_pair_score_t ChessBoard::get_best_move(int r, bool iswhite) {
             continue;
         }
         if (r == 1) { // base case
-            move_score_t score = {
-                get_score(true) + nmoves_w*POS_FACTOR, // material + position
-                get_score(false) + nmoves_b*POS_FACTOR // material + position
-            };
-            double advantage = (score.first-score.second)*(iswhite? 1 : -1);
+            move_score_t score = get_score(iswhite)-get_score(!iswhite)
+                + pos_adv*POS_FACTOR; // material + position
+            double advantage = score;
             if (advantage > best_advatage) { // better than current
                 best_advatage = advantage;
                 vals.clear();
@@ -106,8 +100,8 @@ move_pair_score_t ChessBoard::get_best_move(int r, bool iswhite) {
         } else {
             move_pair_score_t next_move = get_best_move(r-1, !iswhite);
             const move_score_t& next_score = next_move.move_score;
-            move_score_t score = next_score;
-            double advantage = (score.first-score.second)*(iswhite? 1 : -1);
+            move_score_t score = -next_score;
+            double advantage = score;
             if (advantage > best_advatage) { // better than current
                 best_advatage = advantage;
                 vals.clear();
@@ -131,31 +125,4 @@ move_pair_score_t ChessBoard::get_best_move(int r, bool iswhite) {
     // UNDEFINE MACROS
     #undef LOSE_SCORE
     #undef STALEMATE_SCORE
-}
-
-// WIP
-[[deprecated]] vector<move_pair_score_t> ChessBoard::get_move_scores(int r, bool iswhite) {
-    vector<move_pair_score_t> val;
-    vector<move_pair_t> moves = get_all_moves(iswhite);
-    for (auto& [piece, move]: moves) {
-        ChessPiece* captpiece = grid[move.first][move.second];
-        int x0 = piece->x, y0 = piece->y; // save old state
-        // test move
-        if (captpiece) {rem_piece(*captpiece);}
-        move_piece(*piece, move.first, move.second);
-        if (r == 1) {
-            val.push_back({{piece, move}, {get_score(true), get_score(false)}});
-        } else {
-            vector<move_pair_score_t> solve = get_move_scores(r-1, !iswhite);
-            move_pair_score_t bestmove = {};
-            for (const auto& [mvpr, score]: solve) {
-
-            }
-            val.push_back({{piece, move}, bestmove.move_score});
-        }
-        // backtrack
-        move_piece(*piece, x0, y0);
-        if (captpiece) {add_piece(*captpiece, captpiece->x, captpiece->y);}
-    }
-    return val;
 }

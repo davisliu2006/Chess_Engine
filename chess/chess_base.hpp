@@ -28,7 +28,7 @@ namespace chess {
     // pair of x and y coordinates
     using move_t = pair<int,int>;
     // pair of white and black score, respectively
-    using move_score_t = pair<double,double>;
+    using move_score_t = double;
 
     // piece type identifiers
     enum piece_e : char {
@@ -85,14 +85,14 @@ namespace chess {
     */
     struct move_pair_score_t {
         move_pair_t move_pair = move_pair_t::INVALID();
-        move_score_t move_score = {0, 0};
+        move_score_t move_score = 0;
 
         bool is_invalid() const {return move_pair.is_invalid();}
     };
     // output
     inline std::ostream& operator <<(std::ostream& out, const move_pair_score_t& mps) {
         // if (mps.is_invalid()) {return out << "INVALID MOVE PAIR SCORE";}
-        return out << mps.move_pair << " (" << mps.move_score.first << ',' << mps.move_score.second << ')';
+        return out << mps.move_pair << " (" << mps.move_score << ')';
     }
 
     // CHESS BOARD
