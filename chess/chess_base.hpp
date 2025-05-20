@@ -27,7 +27,7 @@ namespace chess {
 
     // pair of x and y coordinates
     using move_t = pair<int,int>;
-    // pair of white and black score, respectively
+    // target score - opponent score
     using move_score_t = double;
 
     // piece type identifiers
@@ -37,11 +37,11 @@ namespace chess {
         queen = 'Q', king = 'K'
     };
 
-    //CLASSES
+    // CLASSES
 
     // pre-declarations
-    class ChessPiece;
-    class ChessBoard;
+    struct ChessPiece;
+    struct ChessBoard;
 
     // CHESS PIECE
     struct ChessPiece {
@@ -52,10 +52,7 @@ namespace chess {
         bool onboard = false;
 
         // constructors
-        ChessPiece(bool iswhite1, char type1) {
-            iswhite = iswhite1;
-            type = type1;
-        }
+        ChessPiece(bool iswhite, char type): iswhite(iswhite), type(type) {}
     };
     // output
     inline std::ostream& operator <<(std::ostream& out, const ChessPiece& piece) {
@@ -97,13 +94,20 @@ namespace chess {
 
     // CHESS BOARD
     struct ChessBoard {
-        array<array<ChessPiece*, 8>, 8> grid ;
+        array<array<ChessPiece*, 8>, 8> grid;
         array<set<ChessPiece*>, 2> pieces;
         array<ChessPiece*, 2> kings = {NULL, NULL};
+        vector<ChessPiece*> _dealloc;
 
         // constructors
         ChessBoard() {
             for (auto& row: grid) {row.fill(NULL);}
+            _dealloc.reserve(64);
+        }
+
+        // destructor
+        ~ChessBoard() {
+            for (ChessPiece* piece: _dealloc) {delete piece;}
         }
 
         // add piece
@@ -116,6 +120,7 @@ namespace chess {
         void add_piece(bool iswhite, char type, int x, int y) {
             ChessPiece* piece = new ChessPiece(iswhite, type);
             add_piece(*piece, x, y);
+            _dealloc.push_back(piece);
         }
 
         // remove piece

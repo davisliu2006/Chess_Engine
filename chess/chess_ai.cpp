@@ -12,7 +12,7 @@ using namespace chess;
 using namespace chess::chess_ai;
 
 // 0 is black square, 1 is white square
-bool square_parity(int x, int y) {
+static bool square_parity(int x, int y) {
     return (x+y)%2;
 }
 

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <bits/stdc++.h>
+#include <random>
 #include "system.hpp"
 
 // random number generator
