@@ -52,10 +52,7 @@ namespace chess {
         bool onboard = false;
 
         // constructors
-        ChessPiece(bool iswhite1, char type1) {
-            iswhite = iswhite1;
-            type = type1;
-        }
+        ChessPiece(bool iswhite, char type): iswhite(iswhite), type(type) {}
     };
     // output
     inline std::ostream& operator <<(std::ostream& out, const ChessPiece& piece) {
