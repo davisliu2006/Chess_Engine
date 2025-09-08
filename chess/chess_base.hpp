@@ -37,11 +37,11 @@ namespace chess {
         queen = 'Q', king = 'K'
     };
 
-    //CLASSES
+    // CLASSES
 
     // pre-declarations
-    class ChessPiece;
-    class ChessBoard;
+    struct ChessPiece;
+    struct ChessBoard;
 
     // CHESS PIECE
     struct ChessPiece {
