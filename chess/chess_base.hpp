@@ -104,6 +104,8 @@ namespace chess {
             for (auto& row: grid) {row.fill(NULL);}
             _dealloc.reserve(64);
         }
+
+        // destructor
         ~ChessBoard() {
             for (ChessPiece* piece: _dealloc) {delete piece;}
         }
