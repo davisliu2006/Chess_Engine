@@ -27,7 +27,7 @@ namespace chess {
 
     // pair of x and y coordinates
     using move_t = pair<int,int>;
-    // pair of white and black score, respectively
+    // target score - opponent score
     using move_score_t = double;
 
     // piece type identifiers
