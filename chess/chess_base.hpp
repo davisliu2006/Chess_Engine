@@ -94,13 +94,18 @@ namespace chess {
 
     // CHESS BOARD
     struct ChessBoard {
-        array<array<ChessPiece*, 8>, 8> grid ;
+        array<array<ChessPiece*, 8>, 8> grid;
         array<set<ChessPiece*>, 2> pieces;
         array<ChessPiece*, 2> kings = {NULL, NULL};
+        vector<ChessPiece*> _dealloc;
 
         // constructors
         ChessBoard() {
             for (auto& row: grid) {row.fill(NULL);}
+            _dealloc.reserve(64);
+        }
+        ~ChessBoard() {
+            for (ChessPiece* piece: _dealloc) {delete piece;}
         }
 
         // add piece
@@ -113,6 +118,7 @@ namespace chess {
         void add_piece(bool iswhite, char type, int x, int y) {
             ChessPiece* piece = new ChessPiece(iswhite, type);
             add_piece(*piece, x, y);
+            _dealloc.push_back(piece);
         }
 
         // remove piece
