@@ -8,20 +8,20 @@ chess_debug.hpp
 
 namespace chess {
     inline std::istream& operator >>(std::istream& in, ChessBoard& board) {
-        for (int i = 7; i >= 0; i--) {
-            for (int j = 0; j <= 7; j++) {
+        for (int y = 7; y >= 0; y--) {
+            for (int x = 0; x <= 7; x++) {
                 string pcstr;
                 in >> pcstr;
-                cout << pcstr << (j == 7? '\n' : ' ') << std::flush;
+                cout << pcstr << (x == 7? '\n' : ' ') << std::flush;
                 if (pcstr[0] == '-') {
                     // do nothing
                 } else {
                     char type = pcstr[0];
                     bool iswhite = (pcstr[1] == '1');
-                    board.add_piece(iswhite, type, j, i);
+                    board.add_piece(iswhite, type, x, y);
                     if (type == king) {
                         assert(!board.kings[iswhite] && "Board cannot have more than one king.");
-                        board.kings[iswhite] = board.grid[j][i];
+                        board.kings[iswhite] = board.grid[x][y];
                     }
                 }
             }
