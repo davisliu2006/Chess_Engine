@@ -1,6 +1,7 @@
 #define DEBUG_MODE
 
 #include <array>
+#include <fstream>
 #include <iostream>
 #include <vector>
 
