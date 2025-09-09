@@ -45,10 +45,10 @@ namespace chess {
 
     // CHESS PIECE
     struct ChessPiece {
-        bool iswhite;
-        char type;
         int x = 0; // 0-7
         int y = 0; // 0-7
+        bool iswhite;
+        char type;
         bool onboard = false;
 
         // constructors
