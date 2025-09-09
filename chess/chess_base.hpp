@@ -104,11 +104,15 @@ namespace chess {
             for (auto& row: grid) {row.fill(NULL);}
             _dealloc.reserve(64);
         }
+        ChessBoard(const ChessBoard& board) = delete;
 
         // destructor
         ~ChessBoard() {
             for (ChessPiece* piece: _dealloc) {delete piece;}
         }
+
+        // operators
+        ChessBoard& operator =(const ChessBoard& board) = delete;
 
         // add piece
         void add_piece(ChessPiece& piece, int x, int y) {
