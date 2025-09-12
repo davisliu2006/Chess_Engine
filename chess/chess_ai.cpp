@@ -19,7 +19,6 @@ static bool square_parity(int x, int y) {
 // get score for either side, not accounting for move possibilities
 double ChessBoard::get_score(bool iswhite) const {
     double val = 0; // score value
-    double aggression = 0; // const / avg proximity to king
 
     array<int,8> pawn_count = {}; // special rules: pawns
     int bishop_color = 0; // special rules: bishop
@@ -27,13 +26,22 @@ double ChessBoard::get_score(bool iswhite) const {
     for (ChessPiece* piece: pieces[iswhite]) { // check all pieces
         val += PIECE_VAL[piece->type]; // material value
         ChessPiece* opp_king = kings[!iswhite];
-        aggression += dist(piece->x, piece->y, opp_king->x, opp_king->y);
 
         if (piece->type == pawn) { // special rules: pawns
             pawn_count[piece->x]++;
+            val += pawn_advance_bonus(iswhite, piece->y);
+            if (abs(opp_king->x-piece->x) <= 1) {
+                val += PAWN_PROXIMITY_BONUS/dist(opp_king->x-piece->x, opp_king->y-piece->y);
+            }
         }
         if (piece->type == bishop) { // special rules: bishops
             bishop_color |= (square_parity(piece->x, piece->y)? 1 : 2);
+        }
+        if (piece->type == knight) { // special rules: knight
+            val += KNIGHT_PROXIMITY_BONUS/dist(opp_king->x-piece->x, opp_king->y-piece->y);
+        }
+        if (piece->type == queen) { // special rules: queen
+            val += QUEEN_PROXIMITY_BONUS/dist(opp_king->x-piece->x, opp_king->y-piece->y);
         }
     }
 
@@ -50,8 +58,6 @@ double ChessBoard::get_score(bool iswhite) const {
     // special rules: bishops
     val += (bishop_color == 3)*BISHOP_PARITY_BONUS; // favour oposite-parity bishops
 
-    aggression = AGGRESSION_FACTOR / (aggression/pieces[iswhite].size());
-    val += aggression;
     return val;
 }
 
