@@ -251,7 +251,6 @@ namespace chess {
                     }
                 }
             }
-            cout << "aaa" << std::endl;
             return cb;
         }
         // reconstruct from compressed
