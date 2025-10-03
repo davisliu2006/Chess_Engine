@@ -40,14 +40,15 @@ int main() {
         board.print_pcs();
 
         if (is_computer[white_turn]) {
-            if (history.size() <= 2 && openings::has_opening(opening)) {
-                auto [op1, move_pair] = openings::get_best_opening(opening, board);
+            int opening1;
+            if (history.size() <= 2 && (opening1 = openings::get_best_opening(opening))) {
+                move_pair_t move_pair = openings::to_move_pair(board, opening1);
                 auto& [piece, move] = move_pair;
 
                 ChessPiece* captpiece = board.grid[move.first][move.second];
                 if (captpiece) {board.rem_piece(*captpiece);}
                 board.move_piece(*piece, move.first, move.second);
-                opening = (opening << 16) | op1;
+                opening = (opening << 16) | opening1;
             } else {
                 move_pair_score_t best_mps = board.get_best_move(4, white_turn);
                 cout << best_mps << '\n';
