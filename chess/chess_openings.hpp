@@ -1,3 +1,5 @@
+#pragma once
+
 #include "chess_base.hpp"
 
 namespace chess {
