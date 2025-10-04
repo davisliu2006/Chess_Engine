@@ -30,7 +30,7 @@ int main() {
     stack<int64_t> opening_history;
     int64_t opening = 0;
 
-    array<bool,2> is_computer = {true, true};
+    array<bool,2> is_computer = {true, false};
     while (true) {
         history.push(board.compress());
         opening_history.push(opening);
