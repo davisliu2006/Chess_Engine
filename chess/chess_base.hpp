@@ -115,7 +115,9 @@ namespace chess {
         // constructors
         ChessBoard() {
             for (auto& row: grid) {row.fill(NULL);}
-            _dealloc.reserve(64);
+            pieces[0].reserve(16);
+            pieces[1].reserve(16);
+            _dealloc.reserve(32);
         }
         ChessBoard(const ChessBoard& board) = delete;
 
