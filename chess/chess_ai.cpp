@@ -24,6 +24,8 @@ double ChessBoard::get_score(bool iswhite) const {
     int bishop_color = 0; // special rules: bishop
 
     for (ChessPiece* piece: pieces[iswhite]) { // check all pieces
+        if (!piece->onboard) {continue;}
+        
         val += PIECE_VAL[piece->type]; // material value
         ChessPiece* opp_king = kings[!iswhite];
 

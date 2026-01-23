@@ -210,6 +210,7 @@ bool ChessBoard::is_check(bool iswhite) {
     ChessPiece* king = kings[iswhite];
     assert(king && "Board does not have king.");
     for (ChessPiece* piece: pieces[!iswhite]) { // for each opposing piece
+        if (!piece->onboard) {continue;}
         vector<move_t> moves = get_moves(*piece);
         for (const auto& [mx, my]: moves) { // for each move
             if (mx == king->x && my == king->y) { // can capture king
@@ -235,6 +236,7 @@ void ChessBoard::print_moves(const ChessPiece& piece) {
 // print moves for all pieces on a side
 void ChessBoard::print_all_moves(bool iswhite) {
     for (ChessPiece* pc: ChessBoard::pieces[iswhite]) {
+        if (!pc->onboard) {continue;}
         cout << pc->type << pc->iswhite << '@' << pc->x << pc->y << ": ";
         ChessBoard::print_moves(*pc);
     }
@@ -244,6 +246,7 @@ void ChessBoard::print_all_moves(bool iswhite) {
 vector<move_pair_t> ChessBoard::get_all_moves(bool iswhite) {
     vector<move_pair_t> val;
     for (ChessPiece* pc: ChessBoard::pieces[iswhite]) {
+        if (!pc->onboard) {continue;}
         vector<move_t> moves = get_moves(*pc);
         for (const move_t& move: moves) {
             val.push_back({pc, move});

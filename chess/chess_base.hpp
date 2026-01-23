@@ -108,7 +108,7 @@ namespace chess {
     // CHESS BOARD
     struct ChessBoard {
         array<array<ChessPiece*, 8>, 8> grid;
-        array<set<ChessPiece*>, 2> pieces;
+        array<vector<ChessPiece*>, 2> pieces;
         array<ChessPiece*, 2> kings = {NULL, NULL};
         vector<ChessPiece*> _dealloc;
 
@@ -130,21 +130,18 @@ namespace chess {
         // add piece
         void add_piece(ChessPiece& piece, int x, int y) {
             debug_assert(0 <= x && x < 8 && 0 <= y && y < 8);
-            pieces[piece.iswhite].insert(&piece);
             grid[piece.x = x][piece.y = y] = &piece;
             piece.onboard = true;
         }
-        void add_piece(bool iswhite, char type, int x, int y) {
+        void create_piece(bool iswhite, char type, int x, int y) {
             ChessPiece* piece = new ChessPiece(iswhite, type);
             add_piece(*piece, x, y);
+            pieces[iswhite].push_back(piece);
             _dealloc.push_back(piece);
         }
 
         // remove piece
         void rem_piece(ChessPiece& piece) {
-            auto f = pieces[piece.iswhite].find(&piece);
-            debug_assert(f != pieces[piece.iswhite].end());
-            pieces[piece.iswhite].erase(f);
             grid[piece.x][piece.y] = NULL;
             piece.onboard = false;
         }
@@ -175,16 +172,16 @@ namespace chess {
         // default set up board
         void default_setup() {
             for (int iw = 0; iw <= 1; iw++) {
-                add_piece(iw, rook, 0, 7-7*iw);
-                add_piece(iw, knight, 1, 7-7*iw);
-                add_piece(iw, bishop, 2, 7-7*iw);
-                add_piece(iw, queen, 3, 7-7*iw);
-                add_piece(iw, king, 4, 7-7*iw);
-                add_piece(iw, bishop, 5, 7-7*iw);
-                add_piece(iw, knight, 6, 7-7*iw);
-                add_piece(iw, rook, 7, 7-7*iw);
+                create_piece(iw, rook, 0, 7-7*iw);
+                create_piece(iw, knight, 1, 7-7*iw);
+                create_piece(iw, bishop, 2, 7-7*iw);
+                create_piece(iw, queen, 3, 7-7*iw);
+                create_piece(iw, king, 4, 7-7*iw);
+                create_piece(iw, bishop, 5, 7-7*iw);
+                create_piece(iw, knight, 6, 7-7*iw);
+                create_piece(iw, rook, 7, 7-7*iw);
                 for (int i = 0; i < 8; i++) {
-                    add_piece(iw, pawn, i, 6-5*iw);
+                    create_piece(iw, pawn, i, 6-5*iw);
                 }
             }
             kings = {grid[4][7], grid[4][0]};
@@ -270,7 +267,7 @@ namespace chess {
                     if (cp) {
                         bool iswhite = cp.iswhite();
                         char type = cp.type();
-                        board.add_piece(iswhite, type, x, y);
+                        board.create_piece(iswhite, type, x, y);
                         if (type == king) {
                             assert(!board.kings[iswhite] && "Board cannot have more than one king.");
                             board.kings[iswhite] = board.grid[x][y];

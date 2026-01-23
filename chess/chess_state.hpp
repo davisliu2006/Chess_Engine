@@ -72,7 +72,7 @@ namespace chess {
                     if (cp) {
                         bool iswhite = cp.iswhite();
                         char type = cp.type();
-                        board.add_piece(iswhite, type, x, y);
+                        board.create_piece(iswhite, type, x, y);
                         if (type == king) {
                             assert(!board.kings[iswhite] && "Board cannot have more than one king.");
                             board.kings[iswhite] = board.grid[x][y];
