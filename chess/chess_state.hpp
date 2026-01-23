@@ -57,8 +57,6 @@ namespace chess {
             return cb;
         }
         static void reconstruct_board(ChessBoard& board, const CompressedBoard& trg) {
-            // dealloc old
-            for (ChessPiece* piece: board._dealloc) {delete piece;}
             // reset data
             for (auto& row: board.grid) {row.fill(NULL);}
             board.pieces[0].clear();

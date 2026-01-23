@@ -110,7 +110,7 @@ namespace chess {
         array<array<ChessPiece*, 8>, 8> grid;
         array<vector<ChessPiece*>, 2> pieces;
         array<ChessPiece*, 2> kings = {NULL, NULL};
-        vector<ChessPiece*> _dealloc;
+        vector<ChessPiece> _dealloc;
 
         // constructors
         ChessBoard() {
@@ -122,9 +122,7 @@ namespace chess {
         ChessBoard(const ChessBoard& board) = delete;
 
         // destructor
-        ~ChessBoard() {
-            for (ChessPiece* piece: _dealloc) {delete piece;}
-        }
+        ~ChessBoard() {}
 
         // operators
         ChessBoard& operator =(const ChessBoard& board) = delete;
@@ -135,11 +133,14 @@ namespace chess {
             grid[piece.x = x][piece.y = y] = &piece;
             piece.onboard = true;
         }
+        ChessPiece* create_piece(bool iswhite, char type) {
+            _dealloc.push_back({iswhite, type});
+            return &_dealloc.back();
+        }
         void create_piece(bool iswhite, char type, int x, int y) {
-            ChessPiece* piece = new ChessPiece(iswhite, type);
+            ChessPiece* piece = create_piece(iswhite, type);
             add_piece(*piece, x, y);
             pieces[iswhite].push_back(piece);
-            _dealloc.push_back(piece);
         }
 
         // remove piece
@@ -165,11 +166,11 @@ namespace chess {
 
         // clear board
         void clear() {
-            for (auto& row: grid) {
-                row.fill(NULL);
-            }
-            pieces[0].clear(); pieces[1].clear();
+            for (auto& row: grid) {row.fill(NULL);}
+            pieces[0].clear();
+            pieces[1].clear();
             kings = {NULL, NULL};
+            _dealloc.clear();
         }
         // default set up board
         void default_setup() {
