@@ -8,6 +8,8 @@
 #include "headers/system.hpp"
 #include "headers/rng.hpp"
 #include "chess/chess.hpp"
+#include "chess/chess_openings.hpp"
+#include "chess/chess_state.hpp"
 
 using namespace std;
 using namespace chess;
@@ -25,26 +27,38 @@ int main() {
     bool white_turn = true;
     cout << "FINISH SETUP" << endl;
 
-    stack<CompressedBoard> history;
+    GameStateManager history;
+    int64_t opening = 0;
 
     array<bool,2> is_computer = {true, false};
     while (true) {
-        history.push(board.compress());
-        cout << "Move #" << history.size() << '\n';
+        history.push(board, opening);
+        cout << "Move #" << history.index()+1 << '\n';
         cout << (white_turn? "White" : "Black") << " to move " << (is_computer[white_turn]? "(computer)" : "(human)") << " \n";
         board.print_board();
         board.print_pcs();
 
         if (is_computer[white_turn]) {
-            move_pair_score_t best_mps = board.get_best_move(4, white_turn);
-            cout << best_mps << '\n';
-            if (best_mps.is_invalid()) {return 0;}
-            auto& [move_pair, move_score] = best_mps;
-            auto& [piece, move] = move_pair;
+            int opening1;
+            if (history.index() <= 1 && (opening1 = openings::get_best_opening(opening))) {
+                move_pair_t move_pair = openings::to_move_pair(board, opening1);
+                auto& [piece, move] = move_pair;
 
-            ChessPiece* captpiece = board.grid[move.first][move.second];
-            if (captpiece) {board.rem_piece(*captpiece);}
-            board.move_piece(*piece, move.first, move.second);
+                ChessPiece* captpiece = board.grid[move.first][move.second];
+                if (captpiece) {board.rem_piece(*captpiece);}
+                board.move_piece(*piece, move.first, move.second);
+                opening = (opening << 16) | opening1;
+            } else {
+                move_pair_score_t best_mps = board.get_best_move(4, white_turn);
+                cout << best_mps << '\n';
+                if (best_mps.is_invalid()) {return 0;}
+                auto& [move_pair, move_score] = best_mps;
+                auto& [piece, move] = move_pair;
+
+                ChessPiece* captpiece = board.grid[move.first][move.second];
+                if (captpiece) {board.rem_piece(*captpiece);}
+                board.move_piece(*piece, move.first, move.second);
+            }
         } else {
             cout << "Player turn to move <x0, y0, x1, y1>: ";
             int x0 = -1, y0 = -1, x1 = -1, y1 = -1;
@@ -55,7 +69,7 @@ int main() {
             while (true) {
                 cin >> x0 >> y0 >> x1 >> y1;
                 cin.ignore(1e5, '\n');
-                if (x0 == -1 && y0 == -1 && history.size() >= 3) { // undo
+                if (x0 == -1 && y0 == -1 && history.index() >= 2) { // undo
                     undo = true;
                     break;
                 }
@@ -72,14 +86,17 @@ int main() {
             }
 
             if (undo) {
-                history.pop(); history.pop();
-                ChessBoard::reconstruct(board, history.top()); history.pop();
+                history.undo(); history.undo();
+                ChessBoard::reconstruct(board, history.current().board);
+                opening = history.current().opening;
+                history.undo();
                 cout << '\n';
                 continue;
             } else {
                 const auto& [piece, move] = *selected;
                 ChessPiece* captpiece = board.grid[move.first][move.second];
                 if (captpiece) {board.rem_piece(*captpiece);}
+                opening = (opening << 16) | (piece->x << 12) | (piece->y << 8) | (move.first << 4) | (move.second);
                 board.move_piece(*piece, move.first, move.second);
             }
         }
