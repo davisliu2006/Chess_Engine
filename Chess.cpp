@@ -87,7 +87,7 @@ int main() {
 
             if (undo) {
                 history.undo(); history.undo();
-                ChessBoard::reconstruct(board, history.current().board);
+                GameStateManager::reconstruct_board(board, history.current().board);
                 opening = history.current().opening;
                 history.undo();
                 cout << '\n';
