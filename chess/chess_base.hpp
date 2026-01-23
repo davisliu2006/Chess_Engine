@@ -110,7 +110,7 @@ namespace chess {
         array<array<ChessPiece*, 8>, 8> grid;
         array<vector<ChessPiece*>, 2> pieces;
         array<ChessPiece*, 2> kings = {NULL, NULL};
-        vector<ChessPiece*> _dealloc;
+        vector<ChessPiece> _dealloc;
 
         // constructors
         ChessBoard() {
@@ -122,9 +122,7 @@ namespace chess {
         ChessBoard(const ChessBoard& board) = delete;
 
         // destructor
-        ~ChessBoard() {
-            for (ChessPiece* piece: _dealloc) {delete piece;}
-        }
+        ~ChessBoard() {}
 
         // operators
         ChessBoard& operator =(const ChessBoard& board) = delete;
@@ -135,11 +133,15 @@ namespace chess {
             grid[piece.x = x][piece.y = y] = &piece;
             piece.onboard = true;
         }
-        void create_piece(bool iswhite, char type, int x, int y) {
-            ChessPiece* piece = new ChessPiece(iswhite, type);
+        ChessPiece* create_piece(bool iswhite, char type) {
+            _dealloc.push_back({iswhite, type});
+            return &_dealloc.back();
+        }
+        ChessPiece* create_piece(bool iswhite, char type, int x, int y) {
+            ChessPiece* piece = create_piece(iswhite, type);
             add_piece(*piece, x, y);
             pieces[iswhite].push_back(piece);
-            _dealloc.push_back(piece);
+            return piece;
         }
 
         // remove piece
@@ -165,11 +167,11 @@ namespace chess {
 
         // clear board
         void clear() {
-            for (auto& row: grid) {
-                row.fill(NULL);
-            }
-            pieces[0].clear(); pieces[1].clear();
+            for (auto& row: grid) {row.fill(NULL);}
+            pieces[0].clear();
+            pieces[1].clear();
             kings = {NULL, NULL};
+            _dealloc.clear();
         }
         // default set up board
         void default_setup() {
@@ -236,7 +238,17 @@ namespace chess {
 
         // defined in chess_ai.cpp
         double get_score(bool iswhite) const;
+        [[deprecated]] double get_move_score(int r, bool iswhite, const move_pair_t& mp);
         move_pair_score_t get_best_move(int r, bool iswhite);
-        [[deprecated]] vector<move_pair_score_t> get_move_scores(int r, bool iswhite);
     };
+
+    inline void copy_board(ChessBoard& trg, const ChessBoard& ref) {
+        for (const ChessPiece& ref_pc: ref._dealloc) {
+            ChessPiece* trg_pc = trg.create_piece(ref_pc.iswhite, ref_pc.type, ref_pc.x, ref_pc.y);
+            if (ref_pc.type == king) {
+                assert(!trg.kings[ref_pc.iswhite]);
+                trg.kings[ref_pc.iswhite] = trg_pc;
+            }
+        }
+    }
 }
