@@ -238,48 +238,5 @@ namespace chess {
         double get_score(bool iswhite) const;
         move_pair_score_t get_best_move(int r, bool iswhite);
         [[deprecated]] vector<move_pair_score_t> get_move_scores(int r, bool iswhite);
-
-        // compress
-        CompressedBoard compress() const {
-            CompressedBoard cb;
-            for (int x = 0; x <= 7; x++) {
-                for (int y = 0; y <= 7; y++) {
-                    ChessPiece* piece = grid[x][y];
-                    if (piece) {
-                        cb.grid[x*8+y].val = piece->type | char(0x80)*piece->iswhite;
-                    }
-                }
-            }
-            return cb;
-        }
-        // reconstruct from compressed
-        static void reconstruct(ChessBoard& board, const CompressedBoard& trg) {
-            // dealloc old
-            for (ChessPiece* piece: board._dealloc) {delete piece;}
-            // reset data
-            for (auto& row: board.grid) {row.fill(NULL);}
-            board.pieces[0].clear();
-            board.pieces[1].clear();
-            board.kings = {NULL, NULL};
-            board._dealloc.clear();
-            // fill board
-            for (int x = 0; x <= 7; x++) {
-                for (int y = 0; y <= 7; y++) {
-                    CompressedPiece cp = trg.grid[x*8+y];
-                    if (cp) {
-                        bool iswhite = cp.iswhite();
-                        char type = cp.type();
-                        board.create_piece(iswhite, type, x, y);
-                        if (type == king) {
-                            assert(!board.kings[iswhite] && "Board cannot have more than one king.");
-                            board.kings[iswhite] = board.grid[x][y];
-                        }
-                    } else {
-                        board.grid[x][y] = NULL;
-                    }
-                }
-            }
-            assert(board.kings[0] && board.kings[1] && "Board must have exactly two kings.");
-        }
     };
 }
