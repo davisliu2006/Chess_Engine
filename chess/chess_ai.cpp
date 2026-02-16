@@ -71,7 +71,7 @@ move_pair_score_t ChessBoard::get_best_move(int r, bool iswhite) {
     #define STALEMATE_SCORE 0
 
     vector<move_pair_score_t> vals; // all "best moves"
-    vals.reserve(10);
+    vals.reserve(8);
     double best_advatage = -1e9; // best score difference
     vector<move_pair_t> moves = get_all_moves(iswhite); // get all possible moves
     if (moves.size() == 0) { // no valid moves, LOSE
