@@ -77,8 +77,8 @@ move_pair_score_t ChessBoard::get_best_move(int r, bool iswhite) {
     if (moves.size() == 0) { // no valid moves, LOSE
         return {move_pair_t::INVALID(), LOSE_SCORE};
     }
-    for (const auto& [piece, move]: moves) { // check score for each move
-        const auto& [x, y] = move;
+    for (const auto& [piece, pos]: moves) { // check score for each move
+        const auto& [x, y] = pos;
         ChessPiece* captpiece = grid[x][y];
         int x0 = piece->x, y0 = piece->y; // save old state
         // test move
@@ -100,7 +100,7 @@ move_pair_score_t ChessBoard::get_best_move(int r, bool iswhite) {
                 vals.clear();
             }
             if (advantage >= best_advatage) { // better than or same as current
-                vals.push_back({{piece, move}, score});
+                vals.push_back({{piece, pos}, score});
             }
         } else {
             move_pair_score_t next_move = get_best_move(r-1, !iswhite);
@@ -112,7 +112,7 @@ move_pair_score_t ChessBoard::get_best_move(int r, bool iswhite) {
                 vals.clear();
             }
             if (advantage >= best_advatage) { // better than or same as current
-                vals.push_back({{piece, move}, score});
+                vals.push_back({{piece, pos}, score});
             }
         }
         // backtrack

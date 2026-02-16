@@ -8,24 +8,24 @@ Defines move calculation implementation.
 using namespace std;
 using namespace chess;
 
-static constexpr array<move_t,8> knight_mov = {
-    move_t{-1, -2}, move_t{-1, 2}, move_t{1, -2}, move_t{1, 2},
-    move_t{-2, -1}, move_t{-2, 1}, move_t{2, -1}, move_t{2, 1}
+static constexpr array<pos_t,8> knight_mov = {
+    pos_t{-1, -2}, pos_t{-1, 2}, pos_t{1, -2}, pos_t{1, 2},
+    pos_t{-2, -1}, pos_t{-2, 1}, pos_t{2, -1}, pos_t{2, 1}
 };
-static constexpr array<move_t,8> king_mov = {
-    move_t{-1, -1}, move_t{-1, 0}, move_t{-1, 1},
-    move_t{0, -1}, move_t{0, 1},
-    move_t{1, -1}, move_t{1, 0}, move_t{1, 1},
+static constexpr array<pos_t,8> king_mov = {
+    pos_t{-1, -1}, pos_t{-1, 0}, pos_t{-1, 1},
+    pos_t{0, -1}, pos_t{0, 1},
+    pos_t{1, -1}, pos_t{1, 0}, pos_t{1, 1},
 };
 
 // get all moves for a piece
-vector<move_t> ChessBoard::get_moves(const ChessPiece& piece) {
+vector<pos_t> ChessBoard::get_moves(const ChessPiece& piece) {
     const auto& x = piece.x;
     const auto& y = piece.y;
     const bool& iswhite = piece.iswhite;
     int x1, y1;
 
-    vector<move_t> moves; // all valid moves
+    vector<pos_t> moves; // all valid moves
     moves.reserve(16);
 
     if (piece.type == pawn) { // PAWN
@@ -207,7 +207,7 @@ bool ChessBoard::is_check(bool iswhite) {
     assert(king && "Board does not have king.");
     for (ChessPiece* piece: pieces[!iswhite]) { // for each opposing piece
         if (!piece->onboard) {continue;}
-        vector<move_t> moves = get_moves(*piece);
+        vector<pos_t> moves = get_moves(*piece);
         for (const auto& [mx, my]: moves) { // for each move
             if (mx == king->x && my == king->y) { // can capture king
                 return true;
@@ -223,7 +223,7 @@ bool ChessBoard::is_check(bool iswhite) {
 
 // print moves for a piece
 void ChessBoard::print_moves(const ChessPiece& piece) {
-    vector<move_t> moves = get_moves(piece);
+    vector<pos_t> moves = get_moves(piece);
     for (const auto& [mx, my]: moves) {
         cout << mx << my << ' ';
     }
@@ -244,9 +244,9 @@ vector<move_pair_t> ChessBoard::get_all_moves(bool iswhite) {
     val.reserve(32);
     for (ChessPiece* pc: ChessBoard::pieces[iswhite]) {
         if (!pc->onboard) {continue;}
-        vector<move_t> moves = get_moves(*pc);
-        for (const move_t& move: moves) {
-            val.push_back({pc, move});
+        vector<pos_t> moves = get_moves(*pc);
+        for (const pos_t& pos: moves) {
+            val.push_back({pc, pos});
         }
     }
     return val;

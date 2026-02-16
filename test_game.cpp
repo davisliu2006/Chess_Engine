@@ -37,11 +37,11 @@ int main() {
         cout << best_mps << " computed in " << t-t0 << '\n';
         if (best_mps.is_invalid()) {return 0;}
         auto& [move_pair, move_score] = best_mps;
-        auto& [piece, move] = move_pair;
+        auto& [piece, pos] = move_pair;
 
-        ChessPiece* captpiece = board.grid[move.x][move.y];
+        ChessPiece* captpiece = board.grid[pos.x][pos.y];
         if (captpiece) {board.rem_piece(*captpiece);}
-        board.move_piece(*piece, move.x, move.y);
+        board.move_piece(*piece, pos.x, pos.y);
 
         white_turn = !white_turn;
         cout << '\n';

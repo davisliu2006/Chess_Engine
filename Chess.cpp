@@ -42,22 +42,22 @@ int main() {
             int opening1;
             if (history.index() <= 1 && (opening1 = openings::get_best_opening(opening))) {
                 move_pair_t move_pair = openings::to_move_pair(board, opening1);
-                auto& [piece, move] = move_pair;
+                auto& [piece, pos] = move_pair;
 
-                ChessPiece* captpiece = board.grid[move.x][move.y];
+                ChessPiece* captpiece = board.grid[pos.x][pos.y];
                 if (captpiece) {board.rem_piece(*captpiece);}
-                board.move_piece(*piece, move.x, move.y);
+                board.move_piece(*piece, pos.x, pos.y);
                 opening = (opening << 16) | opening1;
             } else {
                 move_pair_score_t best_mps = board.get_best_move(4, white_turn);
                 cout << best_mps << '\n';
                 if (best_mps.is_invalid()) {return 0;}
                 auto& [move_pair, move_score] = best_mps;
-                auto& [piece, move] = move_pair;
+                auto& [piece, pos] = move_pair;
 
-                ChessPiece* captpiece = board.grid[move.x][move.y];
+                ChessPiece* captpiece = board.grid[pos.x][pos.y];
                 if (captpiece) {board.rem_piece(*captpiece);}
-                board.move_piece(*piece, move.x, move.y);
+                board.move_piece(*piece, pos.x, pos.y);
             }
         } else {
             cout << "Player turn to move <x0, y0, x1, y1>: ";
@@ -74,9 +74,9 @@ int main() {
                     break;
                 }
                 for (const auto& move_pair: moves) {
-                    const auto& [piece, move] = move_pair;
+                    const auto& [piece, pos] = move_pair;
                     if (x0 == piece->x && y0 == piece->y
-                    && x1 == move.x && y1 == move.y) {
+                    && x1 == pos.x && y1 == pos.y) {
                         selected = &move_pair;
                         break;
                     }
@@ -93,11 +93,11 @@ int main() {
                 cout << '\n';
                 continue;
             } else {
-                const auto& [piece, move] = *selected;
-                ChessPiece* captpiece = board.grid[move.x][move.y];
+                const auto& [piece, pos] = *selected;
+                ChessPiece* captpiece = board.grid[pos.x][pos.y];
                 if (captpiece) {board.rem_piece(*captpiece);}
-                opening = (opening << 16) | (piece->x << 12) | (piece->y << 8) | (move.x << 4) | (move.y);
-                board.move_piece(*piece, move.x, move.y);
+                opening = (opening << 16) | (piece->x << 12) | (piece->y << 8) | (pos.x << 4) | (pos.y);
+                board.move_piece(*piece, pos.x, pos.y);
             }
         }
 

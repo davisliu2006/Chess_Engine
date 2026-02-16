@@ -28,7 +28,7 @@ namespace chess {
     // target score - opponent score
     using score_t = double;
     // pair of x and y coordinates
-    struct move_t {
+    struct pos_t {
         int x, y;
     };
 
@@ -80,7 +80,7 @@ namespace chess {
     */
     struct move_pair_t {
         ChessPiece* piece = NULL;
-        move_t move = {0, 0};
+        pos_t pos = {0, 0};
 
         static move_pair_t INVALID() {return {NULL, {0, 0}};}
         bool is_invalid() const {return piece == NULL;}
@@ -88,7 +88,7 @@ namespace chess {
     // output
     inline std::ostream& operator <<(std::ostream& out, const move_pair_t& mp) {
         if (mp.is_invalid()) {return out << "INVALID MOVE PAIR";}
-        return out << *mp.piece << " to " << mp.move.x << mp.move.y;
+        return out << *mp.piece << " to " << mp.pos.x << mp.pos.y;
     }
 
     // MOVE PAIR SCORE
@@ -231,7 +231,7 @@ namespace chess {
         }
 
         // defined in chess_moves.cpp
-        vector<move_t> get_moves(const ChessPiece& piece);
+        vector<pos_t> get_moves(const ChessPiece& piece);
         bool is_check(bool iswhite);
         [[deprecated]] bool is_checkmate(bool iswhite);
         void print_moves(const ChessPiece& piece);
