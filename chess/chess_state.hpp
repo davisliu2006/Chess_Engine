@@ -9,6 +9,7 @@ Defines classes and functions that help track the game's state.
 #include <stack>
 
 #include "chess_base.hpp"
+#include "chess_board.hpp"
 
 namespace chess {
     using std::stack, std::deque;

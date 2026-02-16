@@ -1,6 +1,7 @@
 #pragma once
 
 #include "chess_base.hpp"
+#include "chess_board.hpp"
 
 namespace chess {
     using std::unordered_map;
