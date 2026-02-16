@@ -8,6 +8,16 @@ Defines move calculation implementation.
 using namespace std;
 using namespace chess;
 
+static constexpr array<move_t,8> knight_mov = {
+    pair{-1, -2}, pair{-1, 2}, pair{1, -2}, pair{1, 2},
+    pair{-2, -1}, pair{-2, 1}, pair{2, -1}, pair{2, 1}
+};
+static constexpr array<move_t,8> king_mov = {
+    pair{-1, -1}, pair{-1, 0}, pair{-1, 1},
+    pair{0, -1}, pair{0, 1},
+    pair{1, -1}, pair{1, 0}, pair{1, 1},
+};
+
 // get all moves for a piece
 vector<move_t> ChessBoard::get_moves(const ChessPiece& piece) {
     const int& x = piece.x;
@@ -39,25 +49,12 @@ vector<move_t> ChessBoard::get_moves(const ChessPiece& piece) {
     }
     
     if (piece.type == knight) { // KNIGHT
-        for (int i = -1; i <= 1; i += 2) { // 1 hori, 2 vtc
-            for (int j = -2; j <= 2; j += 4) {
-                x1 = x+i; y1 = y+j;
-                if (0 <= x1 && x1 <= 7 && 0 <= y1 && y1 <= 7) { // in range
-                    ChessPiece* captpiece = grid[x1][y1];
-                    if (!captpiece || captpiece->iswhite != iswhite) { // empty or capture
-                        moves.push_back({x1, y1});
-                    }
-                }
-            }
-        }
-        for (int i = -2; i <= 2; i += 4) { // 2 hori, 1 vtc
-            for (int j = -1; j <= 1; j += 2) {
-                x1 = x+i; y1 = y+j;
-                if (0 <= x1 && x1 <= 7 && 0 <= y1 && y1 <= 7) { // in range
-                    ChessPiece* captpiece = grid[x1][y1];
-                    if (!captpiece || captpiece->iswhite != iswhite) { // empty or capture
-                        moves.push_back({x1, y1});
-                    }
+        for (auto [i, j]: knight_mov) { // 1 hori, 2 vtc
+            x1 = x+i; y1 = y+j;
+            if (0 <= x1 && x1 <= 7 && 0 <= y1 && y1 <= 7) { // in range
+                ChessPiece* captpiece = grid[x1][y1];
+                if (!captpiece || captpiece->iswhite != iswhite) { // empty or capture
+                    moves.push_back({x1, y1});
                 }
             }
         }
@@ -190,14 +187,12 @@ vector<move_t> ChessBoard::get_moves(const ChessPiece& piece) {
     }
     
     if (piece.type == king) { // KING
-        for (int i = -1; i <= 1; i++) {
-            for (int j = -1; j <= 1; j++) {
-                x1 = x+i; y1 = y+j;
-                if ((i == 0 && j == 0) || x1 < 0 || x1 > 7 || y1 < 0 || y1 > 7) {continue;}
-                ChessPiece* captpiece = grid[x1][y1];
-                if (!captpiece || captpiece->iswhite != iswhite) { // empty or capture
-                    moves.push_back({x1, y1});
-                }
+        for (auto [i, j]: king_mov) {
+            x1 = x+i; y1 = y+j;
+            if ((i == 0 && j == 0) || x1 < 0 || x1 > 7 || y1 < 0 || y1 > 7) {continue;}
+            ChessPiece* captpiece = grid[x1][y1];
+            if (!captpiece || captpiece->iswhite != iswhite) { // empty or capture
+                moves.push_back({x1, y1});
             }
         }
     }
