@@ -17,8 +17,8 @@ static bool square_parity(int x, int y) {
 }
 
 // get score for either side, not accounting for move possibilities
-double ChessBoard::get_score(bool iswhite) const {
-    double val = 0; // score value
+score_t ChessBoard::get_score(bool iswhite) const {
+    score_t val = 0; // score value
 
     array<int,8> pawn_count = {}; // special rules: pawns
     int bishop_color = 0; // special rules: bishop
@@ -72,7 +72,7 @@ move_pair_score_t ChessBoard::get_best_move(int r, bool iswhite) {
 
     vector<move_pair_score_t> vals; // all "best moves"
     vals.reserve(8);
-    double best_advatage = -1e9; // best score difference
+    score_t best_advatage = -1e9; // best score difference
     vector<move_pair_t> moves = get_all_moves(iswhite); // get all possible moves
     if (moves.size() == 0) { // no valid moves, LOSE
         return {move_pair_t::INVALID(), LOSE_SCORE};
@@ -93,8 +93,8 @@ move_pair_score_t ChessBoard::get_best_move(int r, bool iswhite) {
             continue;
         }
         if (r == 1) { // base case
-            move_score_t score = get_score(iswhite)-get_score(!iswhite);
-            double advantage = score;
+            score_t score = get_score(iswhite)-get_score(!iswhite);
+            score_t advantage = score;
             if (advantage > best_advatage) { // better than current
                 best_advatage = advantage;
                 vals.clear();
@@ -104,9 +104,9 @@ move_pair_score_t ChessBoard::get_best_move(int r, bool iswhite) {
             }
         } else {
             move_pair_score_t next_move = get_best_move(r-1, !iswhite);
-            const move_score_t& next_score = next_move.move_score;
-            move_score_t score = -next_score;
-            double advantage = score;
+            const score_t& next_score = next_move.move_score;
+            score_t score = -next_score;
+            score_t advantage = score;
             if (advantage > best_advatage) { // better than current
                 best_advatage = advantage;
                 vals.clear();

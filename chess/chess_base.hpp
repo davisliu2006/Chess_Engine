@@ -28,7 +28,7 @@ namespace chess {
     // pair of x and y coordinates
     using move_t = pair<int,int>;
     // target score - opponent score
-    using move_score_t = double;
+    using score_t = double;
 
     // piece type identifiers
     enum piece_e : char {
@@ -95,7 +95,7 @@ namespace chess {
     */
     struct move_pair_score_t {
         move_pair_t move_pair = move_pair_t::INVALID();
-        move_score_t move_score = 0;
+        score_t move_score = 0;
 
         bool is_invalid() const {return move_pair.is_invalid();}
     };
@@ -237,8 +237,8 @@ namespace chess {
         vector<move_pair_t> get_all_moves(bool iswhite);
 
         // defined in chess_ai.cpp
-        double get_score(bool iswhite) const;
-        [[deprecated]] double get_move_score(int r, bool iswhite, const move_pair_t& mp);
+        score_t get_score(bool iswhite) const;
+        [[deprecated]] score_t get_move_score(int r, bool iswhite, const move_pair_t& mp);
         move_pair_score_t get_best_move(int r, bool iswhite);
     };
 
