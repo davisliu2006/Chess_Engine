@@ -108,7 +108,7 @@ namespace chess {
         // defined in chess_ai.cpp
         score_t get_score(bool iswhite) const;
         [[deprecated]] score_t get_score_of(int r, const move_t& move);
-        move_score_t get_best_move(int r, bool iswhite);
+        move_score_t get_best_move(bool iswhite, int r);
     };
 
     inline void copy_board(ChessBoard& trg, const ChessBoard& ref) {

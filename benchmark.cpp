@@ -29,7 +29,7 @@ int main() {
         board.print_board();
         board.print_pcs();
         double t0 = time();
-        move_score_t best_mps = board.get_best_move(4, white_turn);
+        move_score_t best_mps = board.get_best_move(white_turn, 4);
         double t = time();
         cout << best_mps << " computed in " << t-t0 << '\n';
         t_tot += t-t0;

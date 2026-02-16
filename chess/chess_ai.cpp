@@ -65,7 +65,7 @@ score_t ChessBoard::get_score(bool iswhite) const {
 }
 
 // search best move with recursion depth "r"
-move_score_t ChessBoard::get_best_move(int r, bool iswhite) {
+move_score_t ChessBoard::get_best_move(bool iswhite, int r) {
     // DEFINE MACROS
     // losing later is better (lower "r")
     #define LOSE_SCORE -10000-r*10 - get_score(!iswhite)
@@ -104,7 +104,7 @@ move_score_t ChessBoard::get_best_move(int r, bool iswhite) {
                 vals.push_back({{piece, pos}, score});
             }
         } else {
-            move_score_t next_move = get_best_move(r-1, !iswhite);
+            move_score_t next_move = get_best_move(!iswhite, r-1);
             const score_t& next_score = next_move.score;
             score_t score = -next_score;
             score_t advantage = score;

@@ -49,7 +49,7 @@ int main() {
                 board.move_piece(*piece, pos.x, pos.y);
                 opening = (opening << 16) | opening1;
             } else {
-                move_score_t best_mps = board.get_best_move(4, white_turn);
+                move_score_t best_mps = board.get_best_move(white_turn, 4);
                 cout << best_mps << '\n';
                 if (best_mps.is_invalid()) {return 0;}
                 const auto& [move, score] = best_mps;

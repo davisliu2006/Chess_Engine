@@ -33,7 +33,7 @@ int main() {
         board.print_all_moves(true);
         cout << "Black moves:\n";
         board.print_all_moves(false);
-        move_score_t best_mps = board.get_best_move(5, white_turn);
+        move_score_t best_mps = board.get_best_move(white_turn, 5);
         cout << best_mps << '\n';
     }
 
