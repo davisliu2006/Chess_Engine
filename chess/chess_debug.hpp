@@ -5,6 +5,7 @@ chess_debug.hpp
 #pragma once
 
 #include "chess_base.hpp"
+#include "chess_board.hpp"
 
 namespace chess {
     constexpr array<char,PIECE_T_SIZE> PIECE_TO_CHAR = []() {

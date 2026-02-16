@@ -1,4 +1,5 @@
 #include "chess_base.hpp"
+#include "chess_board.hpp"
 #include "chess_debug.hpp"
 
 using namespace chess;

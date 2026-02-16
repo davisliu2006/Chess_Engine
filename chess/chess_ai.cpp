@@ -4,6 +4,7 @@ Defines AI algorithm implementation.
 */
 
 #include "chess_base.hpp"
+#include "chess_board.hpp"
 #include "chess_ai.hpp"
 #include "../headers/math.hpp"
 

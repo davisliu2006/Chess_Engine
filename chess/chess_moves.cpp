@@ -4,6 +4,7 @@ Defines move calculation implementation.
 */
 
 #include "chess_base.hpp"
+#include "chess_board.hpp"
 
 using namespace std;
 using namespace chess;
