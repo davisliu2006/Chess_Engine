@@ -28,7 +28,9 @@ namespace chess {
     // target score - opponent score
     using score_t = double;
     // pair of x and y coordinates
-    using move_t = pair<int,int>;
+    struct pos_t {
+        int x, y;
+    };
 
     // piece type identifiers
     enum piece_e : char {
@@ -78,7 +80,7 @@ namespace chess {
     */
     struct move_pair_t {
         ChessPiece* piece = NULL;
-        move_t move = {0, 0};
+        pos_t pos = {0, 0};
 
         static move_pair_t INVALID() {return {NULL, {0, 0}};}
         bool is_invalid() const {return piece == NULL;}
@@ -86,7 +88,7 @@ namespace chess {
     // output
     inline std::ostream& operator <<(std::ostream& out, const move_pair_t& mp) {
         if (mp.is_invalid()) {return out << "INVALID MOVE PAIR";}
-        return out << *mp.piece << " to " << mp.move.first << mp.move.second;
+        return out << *mp.piece << " to " << mp.pos.x << mp.pos.y;
     }
 
     // MOVE PAIR SCORE
@@ -95,14 +97,14 @@ namespace chess {
     */
     struct move_pair_score_t {
         move_pair_t move_pair = move_pair_t::INVALID();
-        score_t move_score = 0;
+        score_t score = 0;
 
         bool is_invalid() const {return move_pair.is_invalid();}
     };
     // output
     inline std::ostream& operator <<(std::ostream& out, const move_pair_score_t& mps) {
         // if (mps.is_invalid()) {return out << "INVALID MOVE PAIR SCORE";}
-        return out << mps.move_pair << " (" << mps.move_score << ')';
+        return out << mps.move_pair << " (" << mps.score << ')';
     }
 
     // CHESS BOARD
@@ -229,7 +231,7 @@ namespace chess {
         }
 
         // defined in chess_moves.cpp
-        vector<move_t> get_moves(const ChessPiece& piece);
+        vector<pos_t> get_moves(const ChessPiece& piece);
         bool is_check(bool iswhite);
         [[deprecated]] bool is_checkmate(bool iswhite);
         void print_moves(const ChessPiece& piece);
