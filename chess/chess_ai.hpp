@@ -15,7 +15,7 @@ namespace chess {
             {rook, 5}, {queen, 10}, {king, 1000}
         };
         // significance of having more moves availible
-        inline double POS_FACTOR = 0.1;
+        [[deprecated]] inline double POS_FACTOR = 0.1;
         
         // special rules
         inline double PAWN_STACK_PENALTY = 0.5; // pawn stack unfavorable
@@ -23,7 +23,7 @@ namespace chess {
         inline double PAWN_PROXIMITY_BONUS = 0.3; // pawn approaching opponent king
         inline double BISHOP_PARITY_BONUS = 1; // opposite parity bishops
         inline double KNIGHT_PROXIMITY_BONUS = 0.5; // knight close to opponent king
-        inline double QUEEN_PROXIMITY_BONUS = 0; // queen close to opponent king
+        inline double QUEEN_PROXIMITY_BONUS = 0.5; // queen close to opponent king
         inline double CASTLE_BONUS = 1; // castling
         inline double pawn_advance_bonus(bool iswhite, int y) {
             if (iswhite && y >= 5) {return double(y-4)/3*0.2;}

@@ -93,10 +93,7 @@ move_pair_score_t ChessBoard::get_best_move(int r, bool iswhite) {
             continue;
         }
         if (r == 1) { // base case
-            vector<move_pair_t> opp_moves = get_all_moves(!iswhite); // for position scoring
-            int pos_adv = moves.size()-opp_moves.size(); // for position scoring
-            move_score_t score = get_score(iswhite)-get_score(!iswhite)
-                + pos_adv*POS_FACTOR; // material + position
+            move_score_t score = get_score(iswhite)-get_score(!iswhite);
             double advantage = score;
             if (advantage > best_advatage) { // better than current
                 best_advatage = advantage;
