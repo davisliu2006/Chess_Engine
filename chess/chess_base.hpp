@@ -6,6 +6,7 @@ Defines base classes for chess library.
 #pragma once
 
 #include <array>
+#include <functional>
 #include <iostream>
 #include <map>
 #include <set>
@@ -33,7 +34,7 @@ namespace chess {
     };
 
     // piece type identifiers
-    enum piece_e : char {
+    enum piece_t: char {
         pawn = 'p', knight = 'k',
         bishop = 'b', rook = 'r',
         queen = 'Q', king = 'K'
@@ -49,7 +50,7 @@ namespace chess {
         char val = 0;
         CompressedPiece() {}
         bool iswhite() const {return val & char(0x80);}
-        char type() const {return val & char(0x7f);}
+        piece_t type() const {return piece_t(val & char(0x7f));}
         operator bool() const {return val != 0;}
         operator char() const {return val;}
     };
@@ -63,16 +64,12 @@ namespace chess {
         int x = 0; // 0-7
         int y = 0; // 0-7
         bool iswhite;
-        char type;
+        piece_t type;
         bool onboard = false;
 
         // constructors
-        ChessPiece(bool iswhite, char type): iswhite(iswhite), type(type) {}
+        ChessPiece(bool iswhite, piece_t type): iswhite(iswhite), type(type) {}
     };
-    // output
-    inline std::ostream& operator <<(std::ostream& out, const ChessPiece& piece) {
-        return out << piece.type << piece.iswhite << '@' << piece.x << piece.y;
-    }
 
     // MOVE
     /*
@@ -85,11 +82,6 @@ namespace chess {
         static move_t INVALID() {return {NULL, {0, 0}};}
         bool is_invalid() const {return piece == NULL;}
     };
-    // output
-    inline std::ostream& operator <<(std::ostream& out, const move_t& move) {
-        if (move.is_invalid()) {return out << "INVALID MOVE";}
-        return out << *move.piece << " to " << move.pos.x << move.pos.y;
-    }
 
     // MOVE SCORE PAIR
     /*
@@ -101,11 +93,6 @@ namespace chess {
 
         bool is_invalid() const {return move.is_invalid();}
     };
-    // output
-    inline std::ostream& operator <<(std::ostream& out, const move_score_t& ms) {
-        // if (ms.is_invalid()) {return out << "INVALID MOVE SCORE";}
-        return out << ms.move << " (" << ms.score << ')';
-    }
 
     // CHESS BOARD
     struct ChessBoard {
@@ -135,11 +122,11 @@ namespace chess {
             grid[piece.x = x][piece.y = y] = &piece;
             piece.onboard = true;
         }
-        ChessPiece* create_piece(bool iswhite, char type) {
+        ChessPiece* create_piece(bool iswhite, piece_t type) {
             _dealloc.push_back({iswhite, type});
             return &_dealloc.back();
         }
-        ChessPiece* create_piece(bool iswhite, char type, int x, int y) {
+        ChessPiece* create_piece(bool iswhite, piece_t type, int x, int y) {
             ChessPiece* piece = create_piece(iswhite, type);
             add_piece(*piece, x, y);
             pieces[iswhite].push_back(piece);

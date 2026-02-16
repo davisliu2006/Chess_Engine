@@ -7,6 +7,43 @@ chess_debug.hpp
 #include "chess_base.hpp"
 
 namespace chess {
+    inline array<char,256> piece_to_char = []() {
+        array<char,256> val = {};
+        val[pawn] = 'p'; val[knight] = 'k';
+        val[bishop] = 'b'; val[rook] = 'r';
+        val[queen] = 'Q'; val[king] = 'K';
+        return val;
+    }();
+    inline array<piece_t,256> char_to_piece = []() {
+        array<piece_t,256> val = {};
+        val['p'] = pawn; val['k'] = knight;
+        val['b'] = bishop; val['r'] = rook;
+        val['Q'] = queen; val['K'] = king;
+        return val;
+    }();
+    
+    // output piece_t
+    inline std::ostream& operator <<(std::ostream& out, piece_t pc) {
+        return out << piece_to_char[pc];
+    }
+
+    // output ChessPiece
+    inline std::ostream& operator <<(std::ostream& out, const ChessPiece& piece) {
+        return out << piece.type << piece.iswhite << '@' << piece.x << piece.y;
+    }
+
+    // output move_t
+    inline std::ostream& operator <<(std::ostream& out, const move_t& move) {
+        if (move.is_invalid()) {return out << "INVALID MOVE";}
+        return out << *move.piece << " to " << move.pos.x << move.pos.y;
+    }
+
+    // output move_score_t
+    inline std::ostream& operator <<(std::ostream& out, const move_score_t& ms) {
+        return out << ms.move << " (" << ms.score << ')';
+    }
+
+    // input ChessBoard
     inline std::istream& operator >>(std::istream& in, ChessBoard& board) {
         for (int y = 7; y >= 0; y--) {
             for (int x = 0; x <= 7; x++) {
@@ -16,7 +53,7 @@ namespace chess {
                 if (pcstr[0] == '-') {
                     // do nothing
                 } else {
-                    char type = pcstr[0];
+                    piece_t type = char_to_piece[pcstr[0]];
                     bool iswhite = (pcstr[1] == '1');
                     board.create_piece(iswhite, type, x, y);
                     if (type == king) {

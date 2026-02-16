@@ -74,7 +74,7 @@ namespace chess {
                     CompressedPiece cp = trg.grid[x*8+y];
                     if (cp) {
                         bool iswhite = cp.iswhite();
-                        char type = cp.type();
+                        piece_t type = cp.type();
                         board.create_piece(iswhite, type, x, y);
                         if (type == king) {
                             assert(!board.kings[iswhite] && "Board cannot have more than one king.");
