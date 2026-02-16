@@ -7,14 +7,14 @@ chess_debug.hpp
 #include "chess_base.hpp"
 
 namespace chess {
-    inline array<char,256> piece_to_char = []() {
-        array<char,256> val = {};
+    constexpr array<char,PIECE_T_SIZE> PIECE_TO_CHAR = []() {
+        array<char,PIECE_T_SIZE> val = {};
         val[pawn] = 'p'; val[knight] = 'k';
         val[bishop] = 'b'; val[rook] = 'r';
         val[queen] = 'Q'; val[king] = 'K';
         return val;
     }();
-    inline array<piece_t,256> char_to_piece = []() {
+    constexpr array<piece_t,256> CHAR_TO_PIECE = []() {
         array<piece_t,256> val = {};
         val['p'] = pawn; val['k'] = knight;
         val['b'] = bishop; val['r'] = rook;
@@ -24,7 +24,7 @@ namespace chess {
     
     // output piece_t
     inline std::ostream& operator <<(std::ostream& out, piece_t pc) {
-        return out << piece_to_char[pc];
+        return out << PIECE_TO_CHAR[pc];
     }
 
     // output ChessPiece
@@ -53,7 +53,7 @@ namespace chess {
                 if (pcstr[0] == '-') {
                     // do nothing
                 } else {
-                    piece_t type = char_to_piece[pcstr[0]];
+                    piece_t type = CHAR_TO_PIECE[pcstr[0]];
                     bool iswhite = (pcstr[1] == '1');
                     board.create_piece(iswhite, type, x, y);
                     if (type == king) {

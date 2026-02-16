@@ -35,10 +35,11 @@ namespace chess {
 
     // piece type identifiers
     enum piece_t: char {
-        pawn = 'p', knight = 'k',
-        bishop = 'b', rook = 'r',
-        queen = 'Q', king = 'K'
+        pawn = 1, knight = 2,
+        bishop = 3, rook = 4,
+        queen = 5, king = 7
     };
+    const int PIECE_T_SIZE = 8;
 
     // CLASSES
 
