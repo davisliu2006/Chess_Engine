@@ -10,10 +10,13 @@ Defines AI algorithm parameters.
 namespace chess {
     namespace chess_ai {
         // significance values of each piece type
-        inline map<char,score_t> PIECE_VAL = {
-            {pawn, 1}, {knight, 3}, {bishop, 3},
-            {rook, 5}, {queen, 10}, {king, 1000}
-        };
+        constexpr array<score_t,PIECE_T_SIZE> PIECE_VAL = []() {
+            array<score_t,PIECE_T_SIZE> val = {};
+            val[pawn] = 1; val[knight] = 3;
+            val[bishop] = 3; val[rook] = 5;
+            val[queen] = 10; val[king] = 1000;
+            return val;
+        }();
         // significance of having more moves availible
         [[deprecated]] inline score_t POS_FACTOR = 0.1;
         
