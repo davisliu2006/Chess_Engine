@@ -1,3 +1,8 @@
+/*
+chess_state.hpp
+Defines classes and functions that help track the game's state.
+*/
+
 #pragma once
 
 #include <deque>
