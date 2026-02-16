@@ -37,8 +37,8 @@ int main() {
         double t = time();
         cout << best_mps << " computed in " << t-t0 << '\n';
         if (best_mps.is_invalid()) {return 0;}
-        auto& [move, score] = best_mps;
-        auto& [piece, pos] = move;
+        const auto& [move, score] = best_mps;
+        const auto& [piece, pos] = move;
 
         ChessPiece* captpiece = board.grid[pos.x][pos.y];
         if (captpiece) {board.rem_piece(*captpiece);}
