@@ -42,7 +42,7 @@ int main() {
             int opening1;
             if (history.index() <= 1 && (opening1 = openings::get_best_opening(opening))) {
                 move_t move = openings::to_move_pair(board, opening1);
-                auto& [piece, pos] = move;
+                const auto& [piece, pos] = move;
 
                 ChessPiece* captpiece = board.grid[pos.x][pos.y];
                 if (captpiece) {board.rem_piece(*captpiece);}
@@ -52,8 +52,8 @@ int main() {
                 move_score_t best_mps = board.get_best_move(4, white_turn);
                 cout << best_mps << '\n';
                 if (best_mps.is_invalid()) {return 0;}
-                auto& [move, score] = best_mps;
-                auto& [piece, pos] = move;
+                const auto& [move, score] = best_mps;
+                const auto& [piece, pos] = move;
 
                 ChessPiece* captpiece = board.grid[pos.x][pos.y];
                 if (captpiece) {board.rem_piece(*captpiece);}
