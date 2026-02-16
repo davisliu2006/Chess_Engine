@@ -64,7 +64,7 @@ vector<move_t> ChessBoard::get_moves(const ChessPiece& piece) {
     }
     
     if (piece.type == bishop or piece.type == queen) { // BISHOP or QUEEN
-        for (int i = 1; i <= 7; i++) { // down, left
+        for (int i = 1; true; i++) { // down, left
             x1 = x-i; y1 = y-i;
             if (x1 >= 0 && y1 >= 0) { // in range
                 ChessPiece* captpiece = grid[x1][y1];
@@ -79,7 +79,7 @@ vector<move_t> ChessBoard::get_moves(const ChessPiece& piece) {
                 break;
             }
         }
-        for (int i = 1; i <= 7; i++) { // up, left
+        for (int i = 1; true; i++) { // up, left
             x1 = x-i; y1 = y+i;
             if (x1 >= 0 && y1 <= 7) { // in range
                 ChessPiece* captpiece = grid[x1][y1];
@@ -94,7 +94,7 @@ vector<move_t> ChessBoard::get_moves(const ChessPiece& piece) {
                 break;
             }
         }
-        for (int i = 1; i <= 7; i++) { // down, right
+        for (int i = 1; true; i++) { // down, right
             x1 = x+i; y1 = y-i;
             if (x1 <= 7 && y1 >= 0) { // in range
                 ChessPiece* captpiece = grid[x1][y1];
@@ -109,7 +109,7 @@ vector<move_t> ChessBoard::get_moves(const ChessPiece& piece) {
                 break;
             }
         }
-        for (int i = 1; i <= 7; i++) { // up, right
+        for (int i = 1; true; i++) { // up, right
             x1 = x+i; y1 = y+i;
             if (x1 <= 7 && y1 <= 7) { // in range
                 ChessPiece* captpiece = grid[x1][y1];
@@ -127,7 +127,7 @@ vector<move_t> ChessBoard::get_moves(const ChessPiece& piece) {
     }
     
     if (piece.type == rook or piece.type == queen) { // ROOK or QUEEN
-        for (int i = 1; i <= 7; i++) { // left
+        for (int i = 1; true; i++) { // left
             x1 = x-i; y1 = y;
             if (x1 >= 0) { // in range
                 ChessPiece* captpiece = grid[x1][y1];
@@ -142,7 +142,7 @@ vector<move_t> ChessBoard::get_moves(const ChessPiece& piece) {
                 break;
             }
         }
-        for (int i = 1; i <= 7; i++) { // right
+        for (int i = 1; true; i++) { // right
             x1 = x+i; y1 = y;
             if (x1 <= 7) { // in range
                 ChessPiece* captpiece = grid[x1][y1];
@@ -157,7 +157,7 @@ vector<move_t> ChessBoard::get_moves(const ChessPiece& piece) {
                 break;
             }
         }
-        for (int i = 1; i <= 7; i++) { // down
+        for (int i = 1; true; i++) { // down
             x1 = x; y1 = y-i;
             if (y1 >= 0) { // in range
                 ChessPiece* captpiece = grid[x1][y1];
@@ -172,7 +172,7 @@ vector<move_t> ChessBoard::get_moves(const ChessPiece& piece) {
                 break;
             }
         }
-        for (int i = 1; i <= 7; i++) { // up
+        for (int i = 1; true; i++) { // up
             x1 = x; y1 = y+i;
             if (y1 <= 7) { // in range
                 ChessPiece* captpiece = grid[x1][y1];

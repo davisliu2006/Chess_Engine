@@ -31,8 +31,10 @@ int main() {
         // board.print_all_moves(true);
         // cout << "Black moves:\n";
         // board.print_all_moves(false);
+        double t0 = time();
         move_pair_score_t best_mps = board.get_best_move(4, white_turn);
-        cout << best_mps << '\n';
+        double t = time();
+        cout << best_mps << " computed in " << t-t0 << '\n';
         if (best_mps.is_invalid()) {return 0;}
         auto& [move_pair, move_score] = best_mps;
         auto& [piece, move] = move_pair;
