@@ -28,7 +28,9 @@ namespace chess {
     // target score - opponent score
     using score_t = double;
     // pair of x and y coordinates
-    using move_t = pair<int,int>;
+    struct move_t {
+        int x, y;
+    };
 
     // piece type identifiers
     enum piece_e : char {
@@ -86,7 +88,7 @@ namespace chess {
     // output
     inline std::ostream& operator <<(std::ostream& out, const move_pair_t& mp) {
         if (mp.is_invalid()) {return out << "INVALID MOVE PAIR";}
-        return out << *mp.piece << " to " << mp.move.first << mp.move.second;
+        return out << *mp.piece << " to " << mp.move.x << mp.move.y;
     }
 
     // MOVE PAIR SCORE

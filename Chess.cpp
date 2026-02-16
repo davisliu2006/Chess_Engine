@@ -44,9 +44,9 @@ int main() {
                 move_pair_t move_pair = openings::to_move_pair(board, opening1);
                 auto& [piece, move] = move_pair;
 
-                ChessPiece* captpiece = board.grid[move.first][move.second];
+                ChessPiece* captpiece = board.grid[move.x][move.y];
                 if (captpiece) {board.rem_piece(*captpiece);}
-                board.move_piece(*piece, move.first, move.second);
+                board.move_piece(*piece, move.x, move.y);
                 opening = (opening << 16) | opening1;
             } else {
                 move_pair_score_t best_mps = board.get_best_move(4, white_turn);
@@ -55,9 +55,9 @@ int main() {
                 auto& [move_pair, move_score] = best_mps;
                 auto& [piece, move] = move_pair;
 
-                ChessPiece* captpiece = board.grid[move.first][move.second];
+                ChessPiece* captpiece = board.grid[move.x][move.y];
                 if (captpiece) {board.rem_piece(*captpiece);}
-                board.move_piece(*piece, move.first, move.second);
+                board.move_piece(*piece, move.x, move.y);
             }
         } else {
             cout << "Player turn to move <x0, y0, x1, y1>: ";
@@ -76,7 +76,7 @@ int main() {
                 for (const auto& move_pair: moves) {
                     const auto& [piece, move] = move_pair;
                     if (x0 == piece->x && y0 == piece->y
-                    && x1 == move.first && y1 == move.second) {
+                    && x1 == move.x && y1 == move.y) {
                         selected = &move_pair;
                         break;
                     }
@@ -94,10 +94,10 @@ int main() {
                 continue;
             } else {
                 const auto& [piece, move] = *selected;
-                ChessPiece* captpiece = board.grid[move.first][move.second];
+                ChessPiece* captpiece = board.grid[move.x][move.y];
                 if (captpiece) {board.rem_piece(*captpiece);}
-                opening = (opening << 16) | (piece->x << 12) | (piece->y << 8) | (move.first << 4) | (move.second);
-                board.move_piece(*piece, move.first, move.second);
+                opening = (opening << 16) | (piece->x << 12) | (piece->y << 8) | (move.x << 4) | (move.y);
+                board.move_piece(*piece, move.x, move.y);
             }
         }
 

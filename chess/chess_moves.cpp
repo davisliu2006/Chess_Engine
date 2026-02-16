@@ -9,13 +9,13 @@ using namespace std;
 using namespace chess;
 
 static constexpr array<move_t,8> knight_mov = {
-    pair{-1, -2}, pair{-1, 2}, pair{1, -2}, pair{1, 2},
-    pair{-2, -1}, pair{-2, 1}, pair{2, -1}, pair{2, 1}
+    move_t{-1, -2}, move_t{-1, 2}, move_t{1, -2}, move_t{1, 2},
+    move_t{-2, -1}, move_t{-2, 1}, move_t{2, -1}, move_t{2, 1}
 };
 static constexpr array<move_t,8> king_mov = {
-    pair{-1, -1}, pair{-1, 0}, pair{-1, 1},
-    pair{0, -1}, pair{0, 1},
-    pair{1, -1}, pair{1, 0}, pair{1, 1},
+    move_t{-1, -1}, move_t{-1, 0}, move_t{-1, 1},
+    move_t{0, -1}, move_t{0, 1},
+    move_t{1, -1}, move_t{1, 0}, move_t{1, 1},
 };
 
 // get all moves for a piece
