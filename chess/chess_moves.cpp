@@ -20,8 +20,8 @@ static constexpr array<move_t,8> king_mov = {
 
 // get all moves for a piece
 vector<move_t> ChessBoard::get_moves(const ChessPiece& piece) {
-    const int& x = piece.x;
-    const int& y = piece.y;
+    const auto& x = piece.x;
+    const auto& y = piece.y;
     const bool& iswhite = piece.iswhite;
     int x1, y1;
 
