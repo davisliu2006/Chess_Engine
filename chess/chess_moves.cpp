@@ -419,14 +419,11 @@ void ChessBoard::print_all_moves(bool iswhite) {
 
 // get all moves for a side
 vector<move_t> ChessBoard::get_all_moves(bool iswhite) {
-    vector<move_t> val;
-    val.reserve(32);
+    vector<move_t> moves;
+    moves.reserve(32);
     for (ChessPiece* pc: ChessBoard::pieces[iswhite]) {
         if (!pc->onboard) {continue;}
-        vector<pos_t> moves = get_moves(*pc);
-        for (const pos_t& pos: moves) {
-            val.push_back({pc, pos});
-        }
+        append_moves(*this, pc, moves);
     }
-    return val;
+    return moves;
 }
