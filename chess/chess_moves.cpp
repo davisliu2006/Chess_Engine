@@ -26,6 +26,7 @@ vector<move_t> ChessBoard::get_moves(const ChessPiece& piece) {
     int x1, y1;
 
     vector<move_t> moves; // all valid moves
+    moves.reserve(16);
 
     if (piece.type == pawn) { // PAWN
         if (0 < y && y < 7 && !grid[x1 = x][y1 = y-1+2*iswhite]) { // single step
@@ -240,6 +241,7 @@ void ChessBoard::print_all_moves(bool iswhite) {
 // get all moves for a side
 vector<move_pair_t> ChessBoard::get_all_moves(bool iswhite) {
     vector<move_pair_t> val;
+    val.reserve(32);
     for (ChessPiece* pc: ChessBoard::pieces[iswhite]) {
         if (!pc->onboard) {continue;}
         vector<move_t> moves = get_moves(*pc);
