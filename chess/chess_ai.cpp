@@ -64,18 +64,18 @@ score_t ChessBoard::get_score(bool iswhite) const {
 }
 
 // search best move with recursion depth "r"
-move_pair_score_t ChessBoard::get_best_move(int r, bool iswhite) {
+move_score_t ChessBoard::get_best_move(int r, bool iswhite) {
     // DEFINE MACROS
     // losing later is better (lower "r")
     #define LOSE_SCORE -10000-r*10 - get_score(!iswhite)
     #define STALEMATE_SCORE 0
 
-    vector<move_pair_score_t> vals; // all "best moves"
+    vector<move_score_t> vals; // all "best moves"
     vals.reserve(8);
     score_t best_advatage = -1e9; // best score difference
-    vector<move_pair_t> moves = get_all_moves(iswhite); // get all possible moves
+    vector<move_t> moves = get_all_moves(iswhite); // get all possible moves
     if (moves.size() == 0) { // no valid moves, LOSE
-        return {move_pair_t::INVALID(), LOSE_SCORE};
+        return {move_t::INVALID(), LOSE_SCORE};
     }
     for (const auto& [piece, pos]: moves) { // check score for each move
         const auto& [x, y] = pos;
@@ -103,7 +103,7 @@ move_pair_score_t ChessBoard::get_best_move(int r, bool iswhite) {
                 vals.push_back({{piece, pos}, score});
             }
         } else {
-            move_pair_score_t next_move = get_best_move(r-1, !iswhite);
+            move_score_t next_move = get_best_move(r-1, !iswhite);
             const score_t& next_score = next_move.score;
             score_t score = -next_score;
             score_t advantage = score;
@@ -122,8 +122,8 @@ move_pair_score_t ChessBoard::get_best_move(int r, bool iswhite) {
         }
     }
     if (vals.size() == 0) { // no valid moves, LOSE or STALEMATE
-        if (is_check(iswhite)) {return {move_pair_t::INVALID(), LOSE_SCORE};}
-        else return {move_pair_t::INVALID(), STALEMATE_SCORE};
+        if (is_check(iswhite)) {return {move_t::INVALID(), LOSE_SCORE};}
+        else return {move_t::INVALID(), STALEMATE_SCORE};
     }
     return vals[randint(0, vals.size()-1)]; // return random from list of best
 

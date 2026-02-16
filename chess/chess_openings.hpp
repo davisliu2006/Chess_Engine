@@ -13,7 +13,7 @@ namespace chess {
             if (q.size() == 0) {return 0;}
             return mp[opening][randint(0, q.size()-1)];
         };
-        inline move_pair_t to_move_pair(const ChessBoard& board, int x) {
+        inline move_t to_move_pair(const ChessBoard& board, int x) {
             return {board.grid[(x>>12)&0xf][(x>>8)&0xf], {(x>>4)&0xf, x&0xf}};
         }
     }

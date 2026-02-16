@@ -74,37 +74,37 @@ namespace chess {
         return out << piece.type << piece.iswhite << '@' << piece.x << piece.y;
     }
 
-    // MOVE PAIR
+    // MOVE
     /*
     Pair containing chess piece and move position.
     */
-    struct move_pair_t {
+    struct move_t {
         ChessPiece* piece = NULL;
         pos_t pos = {0, 0};
 
-        static move_pair_t INVALID() {return {NULL, {0, 0}};}
+        static move_t INVALID() {return {NULL, {0, 0}};}
         bool is_invalid() const {return piece == NULL;}
     };
     // output
-    inline std::ostream& operator <<(std::ostream& out, const move_pair_t& mp) {
-        if (mp.is_invalid()) {return out << "INVALID MOVE PAIR";}
-        return out << *mp.piece << " to " << mp.pos.x << mp.pos.y;
+    inline std::ostream& operator <<(std::ostream& out, const move_t& move) {
+        if (move.is_invalid()) {return out << "INVALID MOVE";}
+        return out << *move.piece << " to " << move.pos.x << move.pos.y;
     }
 
-    // MOVE PAIR SCORE
+    // MOVE SCORE PAIR
     /*
-    Pair containing move_pair_t and move_score_t.
+    Pair containing move_t and score_t.
     */
-    struct move_pair_score_t {
-        move_pair_t move_pair = move_pair_t::INVALID();
+    struct move_score_t {
+        move_t move = move_t::INVALID();
         score_t score = 0;
 
-        bool is_invalid() const {return move_pair.is_invalid();}
+        bool is_invalid() const {return move.is_invalid();}
     };
     // output
-    inline std::ostream& operator <<(std::ostream& out, const move_pair_score_t& mps) {
-        // if (mps.is_invalid()) {return out << "INVALID MOVE PAIR SCORE";}
-        return out << mps.move_pair << " (" << mps.score << ')';
+    inline std::ostream& operator <<(std::ostream& out, const move_score_t& ms) {
+        // if (ms.is_invalid()) {return out << "INVALID MOVE SCORE";}
+        return out << ms.move << " (" << ms.score << ')';
     }
 
     // CHESS BOARD
@@ -236,12 +236,12 @@ namespace chess {
         [[deprecated]] bool is_checkmate(bool iswhite);
         void print_moves(const ChessPiece& piece);
         void print_all_moves(bool iswhite);
-        vector<move_pair_t> get_all_moves(bool iswhite);
+        vector<move_t> get_all_moves(bool iswhite);
 
         // defined in chess_ai.cpp
         score_t get_score(bool iswhite) const;
-        [[deprecated]] score_t get_move_score(int r, bool iswhite, const move_pair_t& mp);
-        move_pair_score_t get_best_move(int r, bool iswhite);
+        [[deprecated]] score_t get_move_score(int r, bool iswhite, const move_t& move);
+        move_score_t get_best_move(int r, bool iswhite);
     };
 
     inline void copy_board(ChessBoard& trg, const ChessBoard& ref) {

@@ -41,19 +41,19 @@ int main() {
         if (is_computer[white_turn]) {
             int opening1;
             if (history.index() <= 1 && (opening1 = openings::get_best_opening(opening))) {
-                move_pair_t move_pair = openings::to_move_pair(board, opening1);
-                auto& [piece, pos] = move_pair;
+                move_t move = openings::to_move_pair(board, opening1);
+                auto& [piece, pos] = move;
 
                 ChessPiece* captpiece = board.grid[pos.x][pos.y];
                 if (captpiece) {board.rem_piece(*captpiece);}
                 board.move_piece(*piece, pos.x, pos.y);
                 opening = (opening << 16) | opening1;
             } else {
-                move_pair_score_t best_mps = board.get_best_move(4, white_turn);
+                move_score_t best_mps = board.get_best_move(4, white_turn);
                 cout << best_mps << '\n';
                 if (best_mps.is_invalid()) {return 0;}
-                auto& [move_pair, move_score] = best_mps;
-                auto& [piece, pos] = move_pair;
+                auto& [move, score] = best_mps;
+                auto& [piece, pos] = move;
 
                 ChessPiece* captpiece = board.grid[pos.x][pos.y];
                 if (captpiece) {board.rem_piece(*captpiece);}
@@ -62,9 +62,9 @@ int main() {
         } else {
             cout << "Player turn to move <x0, y0, x1, y1>: ";
             int x0 = -1, y0 = -1, x1 = -1, y1 = -1;
-            vector<move_pair_t> moves = board.get_all_moves(white_turn);
+            vector<move_t> moves = board.get_all_moves(white_turn);
             // cout << moves.size() << '\n';
-            const move_pair_t* selected = NULL;
+            const move_t* selected = NULL;
             bool undo = false;
             while (true) {
                 cin >> x0 >> y0 >> x1 >> y1;
@@ -73,11 +73,11 @@ int main() {
                     undo = true;
                     break;
                 }
-                for (const auto& move_pair: moves) {
-                    const auto& [piece, pos] = move_pair;
+                for (const auto& move: moves) {
+                    const auto& [piece, pos] = move;
                     if (x0 == piece->x && y0 == piece->y
                     && x1 == pos.x && y1 == pos.y) {
-                        selected = &move_pair;
+                        selected = &move;
                         break;
                     }
                 }

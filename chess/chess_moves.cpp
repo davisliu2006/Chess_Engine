@@ -239,8 +239,8 @@ void ChessBoard::print_all_moves(bool iswhite) {
 }
 
 // get all moves for a side
-vector<move_pair_t> ChessBoard::get_all_moves(bool iswhite) {
-    vector<move_pair_t> val;
+vector<move_t> ChessBoard::get_all_moves(bool iswhite) {
+    vector<move_t> val;
     val.reserve(32);
     for (ChessPiece* pc: ChessBoard::pieces[iswhite]) {
         if (!pc->onboard) {continue;}
