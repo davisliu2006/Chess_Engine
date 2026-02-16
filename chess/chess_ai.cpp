@@ -104,7 +104,7 @@ move_pair_score_t ChessBoard::get_best_move(int r, bool iswhite) {
             }
         } else {
             move_pair_score_t next_move = get_best_move(r-1, !iswhite);
-            const score_t& next_score = next_move.move_score;
+            const score_t& next_score = next_move.score;
             score_t score = -next_score;
             score_t advantage = score;
             if (advantage > best_advatage) { // better than current

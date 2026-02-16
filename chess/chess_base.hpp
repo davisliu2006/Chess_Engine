@@ -97,14 +97,14 @@ namespace chess {
     */
     struct move_pair_score_t {
         move_pair_t move_pair = move_pair_t::INVALID();
-        score_t move_score = 0;
+        score_t score = 0;
 
         bool is_invalid() const {return move_pair.is_invalid();}
     };
     // output
     inline std::ostream& operator <<(std::ostream& out, const move_pair_score_t& mps) {
         // if (mps.is_invalid()) {return out << "INVALID MOVE PAIR SCORE";}
-        return out << mps.move_pair << " (" << mps.move_score << ')';
+        return out << mps.move_pair << " (" << mps.score << ')';
     }
 
     // CHESS BOARD
