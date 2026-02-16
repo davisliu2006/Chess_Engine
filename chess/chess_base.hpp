@@ -193,42 +193,9 @@ namespace chess {
             kings = {grid[4][7], grid[4][0]};
         }
 
-        // print pieces as list
-        void print_pcs() const {
-            for (ChessPiece* piece: pieces[1]) {
-                if (!piece->onboard) {
-                    cout << "-";
-                }
-                cout << piece->type << "1@" << piece->x << piece->y << " ";
-            }
-            for (ChessPiece* piece: pieces[0]) {
-                if (!piece->onboard) {
-                    cout << "-";
-                }
-                cout << piece->type << "0@" << piece->x << piece->y << " ";
-            }
-            cout << '\n' << std::flush;
-        }
-        // print board as grid
-        void print_board() const {
-            for (int y = 7; y >= 0; y--) {
-                cout << y << " ";
-                for (int x = 0; x <= 7; x++) {
-                    ChessPiece* piece = grid[x][y];
-                    if (piece) {
-                        cout << piece->type << piece->iswhite << " ";
-                    } else {
-                        cout << "-- ";
-                    }
-                }
-                cout << '\n';
-            }
-            cout << "  ";
-            for (int x = 0; x <= 7; x++) {
-                cout << x << "  ";
-            }
-            cout << std::flush;
-        }
+        // defined in chess_debug.cpp
+        void print_pcs() const;
+        void print_board() const;
 
         // defined in chess_moves.cpp
         vector<pos_t> get_moves(const ChessPiece& piece);
@@ -240,7 +207,7 @@ namespace chess {
 
         // defined in chess_ai.cpp
         score_t get_score(bool iswhite) const;
-        [[deprecated]] score_t get_move_score(int r, bool iswhite, const move_t& move);
+        [[deprecated]] score_t get_score_of(int r, const move_t& move);
         move_score_t get_best_move(int r, bool iswhite);
     };
 
