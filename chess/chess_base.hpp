@@ -25,10 +25,10 @@ namespace chess {
 
     // DEFINITIONS
 
-    // pair of x and y coordinates
-    using move_t = pair<int,int>;
     // target score - opponent score
     using score_t = double;
+    // pair of x and y coordinates
+    using move_t = pair<int,int>;
 
     // piece type identifiers
     enum piece_e : char {
