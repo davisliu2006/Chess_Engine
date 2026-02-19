@@ -33,5 +33,12 @@ namespace chess {
             if (!iswhite && y <= 2) {return score_t(3-y)/3*0.2;}
             return 0;
         }
+
+        inline score_t LOSE_SCORE(int r) {
+            return -10000-r;
+        }
+        inline score_t LOSE_SCORE_CUTOFF = -10000;
+        inline score_t STALEMATE_SCORE = 0;
+        inline score_t INVALID_SCORE = -INFINITY;
     }
 }
