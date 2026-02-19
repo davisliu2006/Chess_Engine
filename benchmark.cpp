@@ -24,6 +24,7 @@ int main() {
 
     const int N = 20;
     double t_tot = 0;
+    int mov_tot = 0;
 
     for (int i = 0; i < N; i++) {
         board.print_board();
@@ -33,6 +34,7 @@ int main() {
         double t = time();
         cout << best_mps << " computed in " << t-t0 << '\n';
         t_tot += t-t0;
+        mov_tot += board.get_all_moves(white_turn).size();
         if (best_mps.is_invalid()) {return 0;}
         const auto& [move, score] = best_mps;
         const auto& [piece, pos] = move;
@@ -46,6 +48,7 @@ int main() {
     }
 
     cout << "Average time per move: " << t_tot/N << endl;
+    cout << "Average time per possibility (1st order approximation): " << t_tot/mov_tot << endl;
 
     return 0;
 }
