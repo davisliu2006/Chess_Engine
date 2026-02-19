@@ -64,71 +64,76 @@ score_t ChessBoard::get_score(bool iswhite) const {
     return val;
 }
 
+// search move score with recursion depth "r"
+score_t ChessBoard::get_score_recursive(const move_t& move, int r) {
+    const auto& [piece, pos] = move;
+    bool iswhite = piece->iswhite;
+    const auto& [x, y] = pos;
+    // we need to store return value to backtrack the board state before returning
+    score_t val;
+
+    ChessPiece* captpiece = grid[x][y];
+    auto x0 = piece->x, y0 = piece->y; // save old state
+    // test move
+    if (captpiece) {rem_piece(*captpiece);} // capture
+    move_piece(*piece, x, y);
+
+    if (is_check(piece->iswhite)) { // if illegal
+        val = INVALID_SCORE;
+    } else if (r == 1) { // base case
+        val = get_score(iswhite)-get_score(!iswhite);
+    } else {
+        // get all possible opponent moves
+        auto opp_moves = get_all_moves(!iswhite);
+        // best score difference opponent can achieve
+        score_t best_advantage = INVALID_SCORE;
+        for (const auto& move: opp_moves) { // check each opponent move
+            score_t advantage = get_score_recursive(move, r-1);
+            best_advantage = max(best_advantage, advantage);
+        }
+        // no valid moves: check lose or stalemate
+        if (best_advantage == INVALID_SCORE) {
+            if (is_check(!iswhite)) {
+                best_advantage = LOSE_SCORE(r-1);
+            } else {
+                best_advantage = STALEMATE_SCORE;
+            }
+        }
+        val = -best_advantage;
+    }
+
+    // backtrack
+    move_piece(*piece, x0, y0);
+    if (captpiece) { // un-capture
+        add_piece(*captpiece, captpiece->x, captpiece->y);
+    }
+
+    return val;
+}
+
 // search best move with recursion depth "r"
 move_score_t ChessBoard::get_best_move(bool iswhite, int r) {
-    // DEFINE MACROS
-    // losing later is better (lower "r")
-    #define LOSE_SCORE -10000-r*10 - get_score(!iswhite)
-    #define STALEMATE_SCORE 0
+    vector<move_score_t> candidates; // all "best moves"
+    candidates.reserve(8);
+    score_t best_advantage = -1e9;
 
-    vector<move_score_t> vals; // all "best moves"
-    vals.reserve(8);
-    score_t best_advatage = -1e9; // best score difference
-    vector<move_t> moves = get_all_moves(iswhite); // get all possible moves
-    if (moves.size() == 0) { // no valid moves, LOSE
-        return {move_t::INVALID(), LOSE_SCORE};
-    }
-    for (const auto& [piece, pos]: moves) { // check score for each move
-        const auto& [x, y] = pos;
-        ChessPiece* captpiece = grid[x][y];
-        int x0 = piece->x, y0 = piece->y; // save old state
-        // test move
-        if (captpiece) {rem_piece(*captpiece);} // capture
-        move_piece(*piece, x, y);
-        if (is_check(iswhite)) { // if illegal, END CHECK
-            // backtrack
-            move_piece(*piece, x0, y0);
-            if (captpiece) { // un-capture
-                add_piece(*captpiece, captpiece->x, captpiece->y);
-            }
-            continue;
-        }
-        if (r == 1) { // base case
-            score_t score = get_score(iswhite)-get_score(!iswhite);
-            score_t advantage = score;
-            if (advantage > best_advatage) { // better than current
-                best_advatage = advantage;
-                vals.clear();
-            }
-            if (advantage >= best_advatage) { // better than or same as current
-                vals.push_back({{piece, pos}, score});
-            }
-        } else {
-            move_score_t next_move = get_best_move(!iswhite, r-1);
-            const score_t& next_score = next_move.score;
-            score_t score = -next_score;
-            score_t advantage = score;
-            if (advantage > best_advatage) { // better than current
-                best_advatage = advantage;
-                vals.clear();
-            }
-            if (advantage >= best_advatage) { // better than or same as current
-                vals.push_back({{piece, pos}, score});
-            }
-        }
-        // backtrack
-        move_piece(*piece, x0, y0);
-        if (captpiece) { // un-capture
-            add_piece(*captpiece, captpiece->x, captpiece->y);
+    // test all possible moves
+    auto moves = get_all_moves(iswhite);
+    for (const auto& move: moves) {
+        score_t advantage = get_score_recursive(move, r);
+        if (advantage == INVALID_SCORE) {continue;}
+        if (advantage > best_advantage) { // better than current
+            best_advantage = advantage;
+            candidates.clear();
+            candidates.push_back({move, advantage});
+        } else if (advantage == best_advantage) { // same as current
+            candidates.push_back({move, advantage});
         }
     }
-    if (vals.size() == 0) { // no valid moves, LOSE or STALEMATE
-        if (is_check(iswhite)) {return {move_t::INVALID(), LOSE_SCORE};}
+
+    if (candidates.size() == 0) { // no valid moves, LOSE or STALEMATE
+        if (is_check(iswhite)) {return {move_t::INVALID(), LOSE_SCORE(r)};}
         else return {move_t::INVALID(), STALEMATE_SCORE};
     }
-    return vals[randint(0, vals.size()-1)]; // return random from list of best
-
-    // UNDEFINE MACROS
-    #undef LOSE_SCORE
-    #undef STALEMATE_SCORE
+    return candidates[randint(0, candidates.size()-1)]; // return random from list of best
 }
