@@ -111,7 +111,7 @@ score_t ChessBoard::get_score_recursive(const move_t& move, int r) {
     return val;
 }
 
-// search best move with recursion depth "r"
+// get best move with recursion depth "r"
 move_score_t ChessBoard::get_best_move(bool iswhite, int r) {
     vector<move_score_t> candidates; // all "best moves"
     candidates.reserve(8);

@@ -19,7 +19,19 @@ static constexpr array<pos_t,8> king_mov = {
     pos_t{1, -1}, pos_t{1, 0}, pos_t{1, 1},
 };
 
-static void append_moves(const ChessBoard& board, ChessPiece* piece, vector<move_t>& moves) {
+template <class ret_t>
+static ret_t to_move(ChessPiece* piece, int x, int y) {
+    if constexpr(std::is_same<ret_t,move_t>()) {
+        return move_t{piece, {x, y}};
+    } else if constexpr(std::is_same<ret_t,pos_t>()) {
+        return pos_t{x, y};
+    } else {
+        static_assert(false, "ret_t must be move_t or pos_t");
+    }
+}
+
+template <class ret_t>
+static void append_moves(const ChessBoard& board, ChessPiece* piece, vector<ret_t>& moves) {
     const auto& grid = board.grid;
     const auto& x = piece->x;
     const auto& y = piece->y;
@@ -28,21 +40,21 @@ static void append_moves(const ChessBoard& board, ChessPiece* piece, vector<move
 
     if (piece->type == pawn) { // PAWN
         if (0 < y && y < 7 && !grid[x1 = x][y1 = y-1+2*iswhite]) { // single step
-            moves.push_back({piece, {x1, y1}});
+            moves.push_back(to_move<ret_t>(piece, x1, y1));
             if (y == 6-5*iswhite && !grid[x1 = x][y1 = y-2+4*iswhite]) { // double step
-                moves.push_back({piece, {x1, y1}});
+                moves.push_back(to_move<ret_t>(piece, x1, y1));
             }
         }
         if (x > 0 && 0 < y && y < 7) { // left capture
             ChessPiece* captpiece = grid[x1 = x-1][y1 = y-1+2*iswhite];
             if (captpiece && captpiece->iswhite != iswhite) {
-                moves.push_back({piece, {x1, y1}});
+                moves.push_back(to_move<ret_t>(piece, x1, y1));
             }
         }
         if (x < 7 && 0 < y && y < 7) { // right caputre
             ChessPiece* captpiece = grid[x1 = x+1][y1 = y-1+2*iswhite];
             if (captpiece && captpiece->iswhite != iswhite) {
-                moves.push_back({piece, {x1, y1}});
+                moves.push_back(to_move<ret_t>(piece, x1, y1));
             }
         }
     }
@@ -53,7 +65,7 @@ static void append_moves(const ChessBoard& board, ChessPiece* piece, vector<move
             if (0 <= x1 && x1 <= 7 && 0 <= y1 && y1 <= 7) { // in range
                 ChessPiece* captpiece = grid[x1][y1];
                 if (!captpiece || captpiece->iswhite != iswhite) { // empty or capture
-                    moves.push_back({piece, {x1, y1}});
+                    moves.push_back(to_move<ret_t>(piece, x1, y1));
                 }
             }
         }
@@ -65,9 +77,10 @@ static void append_moves(const ChessBoard& board, ChessPiece* piece, vector<move
             if (x1 >= 0 && y1 >= 0) { // in range
                 ChessPiece* captpiece = grid[x1][y1];
                 if (!captpiece) { // empty
-                    moves.push_back({piece, {x1, y1}});
+                    moves.push_back(to_move<ret_t>(piece, x1, y1));
                 } else if (captpiece->iswhite != iswhite) { // capture
-                    moves.push_back({piece, {x1, y1}}); break;
+                    moves.push_back(to_move<ret_t>(piece, x1, y1));
+                    break;
                 } else { // blocked
                     break;
                 }
@@ -80,9 +93,10 @@ static void append_moves(const ChessBoard& board, ChessPiece* piece, vector<move
             if (x1 >= 0 && y1 <= 7) { // in range
                 ChessPiece* captpiece = grid[x1][y1];
                 if (!captpiece) { // empty
-                    moves.push_back({piece, {x1, y1}});
+                    moves.push_back(to_move<ret_t>(piece, x1, y1));
                 } else if (captpiece->iswhite != iswhite) { // capture
-                    moves.push_back({piece, {x1, y1}}); break;
+                    moves.push_back(to_move<ret_t>(piece, x1, y1));
+                    break;
                 } else { // blocked
                     break;
                 }
@@ -95,9 +109,10 @@ static void append_moves(const ChessBoard& board, ChessPiece* piece, vector<move
             if (x1 <= 7 && y1 >= 0) { // in range
                 ChessPiece* captpiece = grid[x1][y1];
                 if (!captpiece) { // empty
-                    moves.push_back({piece, {x1, y1}});
+                    moves.push_back(to_move<ret_t>(piece, x1, y1));
                 } else if (captpiece->iswhite != iswhite) { // capture
-                    moves.push_back({piece, {x1, y1}}); break;
+                    moves.push_back(to_move<ret_t>(piece, x1, y1));
+                    break;
                 } else { // blocked
                     break;
                 }
@@ -110,9 +125,10 @@ static void append_moves(const ChessBoard& board, ChessPiece* piece, vector<move
             if (x1 <= 7 && y1 <= 7) { // in range
                 ChessPiece* captpiece = grid[x1][y1];
                 if (!captpiece) { // empty
-                    moves.push_back({piece, {x1, y1}});
+                    moves.push_back(to_move<ret_t>(piece, x1, y1));
                 } else if (captpiece->iswhite != iswhite) { // capture
-                    moves.push_back({piece, {x1, y1}}); break;
+                    moves.push_back(to_move<ret_t>(piece, x1, y1));
+                    break;
                 } else { // blocked
                     break;
                 }
@@ -128,9 +144,10 @@ static void append_moves(const ChessBoard& board, ChessPiece* piece, vector<move
             if (x1 >= 0) { // in range
                 ChessPiece* captpiece = grid[x1][y1];
                 if (!captpiece) { // empty
-                    moves.push_back({piece, {x1, y1}});
+                    moves.push_back(to_move<ret_t>(piece, x1, y1));
                 } else if (captpiece->iswhite != iswhite) { // capture
-                    moves.push_back({piece, {x1, y1}}); break;
+                    moves.push_back(to_move<ret_t>(piece, x1, y1));
+                    break;
                 } else { // blocked
                     break;
                 }
@@ -143,9 +160,10 @@ static void append_moves(const ChessBoard& board, ChessPiece* piece, vector<move
             if (x1 <= 7) { // in range
                 ChessPiece* captpiece = grid[x1][y1];
                 if (!captpiece) { // empty
-                    moves.push_back({piece, {x1, y1}});
+                    moves.push_back(to_move<ret_t>(piece, x1, y1));
                 } else if (captpiece->iswhite != iswhite) { // capture
-                    moves.push_back({piece, {x1, y1}}); break;
+                    moves.push_back(to_move<ret_t>(piece, x1, y1));
+                    break;
                 } else { // blocked
                     break;
                 }
@@ -158,9 +176,10 @@ static void append_moves(const ChessBoard& board, ChessPiece* piece, vector<move
             if (y1 >= 0) { // in range
                 ChessPiece* captpiece = grid[x1][y1];
                 if (!captpiece) { // empty
-                    moves.push_back({piece, {x1, y1}});
+                    moves.push_back(to_move<ret_t>(piece, x1, y1));
                 } else if (captpiece->iswhite != iswhite) { // capture
-                    moves.push_back({piece, {x1, y1}}); break;
+                    moves.push_back(to_move<ret_t>(piece, x1, y1));
+                    break;
                 } else { // blocked
                     break;
                 }
@@ -173,9 +192,10 @@ static void append_moves(const ChessBoard& board, ChessPiece* piece, vector<move
             if (y1 <= 7) { // in range
                 ChessPiece* captpiece = grid[x1][y1];
                 if (!captpiece) { // empty
-                    moves.push_back({piece, {x1, y1}});
+                    moves.push_back(to_move<ret_t>(piece, x1, y1));
                 } else if (captpiece->iswhite != iswhite) { // capture
-                    moves.push_back({piece, {x1, y1}}); break;
+                    moves.push_back(to_move<ret_t>(piece, x1, y1));
+                    break;
                 } else { // blocked
                     break;
                 }
@@ -188,10 +208,10 @@ static void append_moves(const ChessBoard& board, ChessPiece* piece, vector<move
     if (piece->type == king) { // KING
         for (auto [i, j]: king_mov) {
             x1 = x+i; y1 = y+j;
-            if ((i == 0 && j == 0) || x1 < 0 || x1 > 7 || y1 < 0 || y1 > 7) {continue;}
+            if (x1 < 0 || x1 > 7 || y1 < 0 || y1 > 7) {continue;}
             ChessPiece* captpiece = grid[x1][y1];
             if (!captpiece || captpiece->iswhite != iswhite) { // empty or capture
-                moves.push_back({piece, {x1, y1}});
+                moves.push_back(to_move<ret_t>(piece, x1, y1));
             }
         }
     }
@@ -199,184 +219,9 @@ static void append_moves(const ChessBoard& board, ChessPiece* piece, vector<move
 
 // get all moves for a piece
 vector<pos_t> ChessBoard::get_moves(const ChessPiece& piece) {
-    const auto& x = piece.x;
-    const auto& y = piece.y;
-    const bool& iswhite = piece.iswhite;
-    int x1, y1;
-
     vector<pos_t> moves; // all valid moves
     moves.reserve(16);
-
-    if (piece.type == pawn) { // PAWN
-        if (0 < y && y < 7 && !grid[x1 = x][y1 = y-1+2*iswhite]) { // single step
-            moves.push_back({x1, y1});
-            if (y == 6-5*iswhite && !grid[x1 = x][y1 = y-2+4*iswhite]) { // double step
-                moves.push_back({x1, y1});
-            }
-        }
-        if (x > 0 && 0 < y && y < 7) { // left capture
-            ChessPiece* captpiece = grid[x1 = x-1][y1 = y-1+2*iswhite];
-            if (captpiece && captpiece->iswhite != iswhite) {
-                moves.push_back({x1, y1});
-            }
-        }
-        if (x < 7 && 0 < y && y < 7) { // right caputre
-            ChessPiece* captpiece = grid[x1 = x+1][y1 = y-1+2*iswhite];
-            if (captpiece && captpiece->iswhite != iswhite) {
-                moves.push_back({x1, y1});
-            }
-        }
-    }
-    
-    if (piece.type == knight) { // KNIGHT
-        for (auto [i, j]: knight_mov) { // 1 hori, 2 vtc
-            x1 = x+i; y1 = y+j;
-            if (0 <= x1 && x1 <= 7 && 0 <= y1 && y1 <= 7) { // in range
-                ChessPiece* captpiece = grid[x1][y1];
-                if (!captpiece || captpiece->iswhite != iswhite) { // empty or capture
-                    moves.push_back({x1, y1});
-                }
-            }
-        }
-    }
-    
-    if (piece.type == bishop or piece.type == queen) { // BISHOP or QUEEN
-        for (int i = 1; true; i++) { // down, left
-            x1 = x-i; y1 = y-i;
-            if (x1 >= 0 && y1 >= 0) { // in range
-                ChessPiece* captpiece = grid[x1][y1];
-                if (!captpiece) { // empty
-                    moves.push_back({x1, y1});
-                } else if (captpiece->iswhite != iswhite) { // capture
-                    moves.push_back({x1, y1}); break;
-                } else { // blocked
-                    break;
-                }
-            } else { // out of range
-                break;
-            }
-        }
-        for (int i = 1; true; i++) { // up, left
-            x1 = x-i; y1 = y+i;
-            if (x1 >= 0 && y1 <= 7) { // in range
-                ChessPiece* captpiece = grid[x1][y1];
-                if (!captpiece) { // empty
-                    moves.push_back({x1, y1});
-                } else if (captpiece->iswhite != iswhite) { // capture
-                    moves.push_back({x1, y1}); break;
-                } else { // blocked
-                    break;
-                }
-            } else { // out of range
-                break;
-            }
-        }
-        for (int i = 1; true; i++) { // down, right
-            x1 = x+i; y1 = y-i;
-            if (x1 <= 7 && y1 >= 0) { // in range
-                ChessPiece* captpiece = grid[x1][y1];
-                if (!captpiece) { // empty
-                    moves.push_back({x1, y1});
-                } else if (captpiece->iswhite != iswhite) { // capture
-                    moves.push_back({x1, y1}); break;
-                } else { // blocked
-                    break;
-                }
-            } else { // out of range
-                break;
-            }
-        }
-        for (int i = 1; true; i++) { // up, right
-            x1 = x+i; y1 = y+i;
-            if (x1 <= 7 && y1 <= 7) { // in range
-                ChessPiece* captpiece = grid[x1][y1];
-                if (!captpiece) { // empty
-                    moves.push_back({x1, y1});
-                } else if (captpiece->iswhite != iswhite) { // capture
-                    moves.push_back({x1, y1}); break;
-                } else { // blocked
-                    break;
-                }
-            } else { // out of range
-                break;
-            }
-        }
-    }
-    
-    if (piece.type == rook or piece.type == queen) { // ROOK or QUEEN
-        for (int i = 1; true; i++) { // left
-            x1 = x-i; y1 = y;
-            if (x1 >= 0) { // in range
-                ChessPiece* captpiece = grid[x1][y1];
-                if (!captpiece) { // empty
-                    moves.push_back({x1, y1});
-                } else if (captpiece->iswhite != iswhite) { // capture
-                    moves.push_back({x1, y1}); break;
-                } else { // blocked
-                    break;
-                }
-            } else { // out of range
-                break;
-            }
-        }
-        for (int i = 1; true; i++) { // right
-            x1 = x+i; y1 = y;
-            if (x1 <= 7) { // in range
-                ChessPiece* captpiece = grid[x1][y1];
-                if (!captpiece) { // empty
-                    moves.push_back({x1, y1});
-                } else if (captpiece->iswhite != iswhite) { // capture
-                    moves.push_back({x1, y1}); break;
-                } else { // blocked
-                    break;
-                }
-            } else { // out of range
-                break;
-            }
-        }
-        for (int i = 1; true; i++) { // down
-            x1 = x; y1 = y-i;
-            if (y1 >= 0) { // in range
-                ChessPiece* captpiece = grid[x1][y1];
-                if (!captpiece) { // empty
-                    moves.push_back({x1, y1});
-                } else if (captpiece->iswhite != iswhite) { // capture
-                    moves.push_back({x1, y1}); break;
-                } else { // blocked
-                    break;
-                }
-            } else { // out of range
-                break;
-            }
-        }
-        for (int i = 1; true; i++) { // up
-            x1 = x; y1 = y+i;
-            if (y1 <= 7) { // in range
-                ChessPiece* captpiece = grid[x1][y1];
-                if (!captpiece) { // empty
-                    moves.push_back({x1, y1});
-                } else if (captpiece->iswhite != iswhite) { // capture
-                    moves.push_back({x1, y1}); break;
-                } else { // blocked
-                    break;
-                }
-            } else { // out of range
-                break;
-            }
-        }
-    }
-    
-    if (piece.type == king) { // KING
-        for (auto [i, j]: king_mov) {
-            x1 = x+i; y1 = y+j;
-            if ((i == 0 && j == 0) || x1 < 0 || x1 > 7 || y1 < 0 || y1 > 7) {continue;}
-            ChessPiece* captpiece = grid[x1][y1];
-            if (!captpiece || captpiece->iswhite != iswhite) { // empty or capture
-                moves.push_back({x1, y1});
-            }
-        }
-    }
-
+    append_moves<pos_t>(*this, (ChessPiece*)(&piece), moves);
     return moves;
 }
 
@@ -423,7 +268,7 @@ vector<move_t> ChessBoard::get_all_moves(bool iswhite) {
     moves.reserve(32);
     for (ChessPiece* pc: ChessBoard::pieces[iswhite]) {
         if (!pc->onboard) {continue;}
-        append_moves(*this, pc, moves);
+        append_moves<move_t>(*this, pc, moves);
     }
     return moves;
 }
