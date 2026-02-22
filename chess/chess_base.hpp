@@ -8,6 +8,7 @@ Defines base classes for chess library.
 #include <array>
 #include <functional>
 #include <iostream>
+#include <thread>
 #include <vector>
 
 #include "../headers/system.hpp"

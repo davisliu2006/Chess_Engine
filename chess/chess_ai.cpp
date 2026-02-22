@@ -3,6 +3,7 @@ chess_ai.cpp
 Defines AI algorithm implementation.
 */
 
+#include <thread>
 #include "chess_base.hpp"
 #include "chess_board.hpp"
 #include "chess_ai.hpp"
@@ -121,6 +122,57 @@ move_score_t ChessBoard::get_best_move(bool iswhite, int r) {
     auto moves = get_all_moves(iswhite);
     for (const auto& move: moves) {
         score_t advantage = get_score_recursive(move, r);
+        if (advantage == INVALID_SCORE) {continue;}
+        if (advantage > best_advantage) { // better than current
+            best_advantage = advantage;
+            candidates.clear();
+            candidates.push_back({move, advantage});
+        } else if (advantage == best_advantage) { // same as current
+            candidates.push_back({move, advantage});
+        }
+    }
+
+    if (candidates.size() == 0) { // no valid moves, LOSE or STALEMATE
+        if (is_check(iswhite)) {return {move_t::INVALID(), LOSE_SCORE(r)};}
+        else return {move_t::INVALID(), STALEMATE_SCORE};
+    }
+    return candidates[randint(0, candidates.size()-1)]; // return random from list of best
+}
+
+// get best move with recursion depth "r"
+move_score_t ChessBoard::get_best_move_concurrent(bool iswhite, int r) {
+    vector<move_score_t> candidates; // all "best moves"
+    candidates.reserve(8);
+    score_t best_advantage = -1e9;
+
+    // test all possible moves
+    auto moves = get_all_moves(iswhite);
+    const int n_moves = moves.size();
+    const int n_threads = min<int>(moves.size(), thread::hardware_concurrency());
+    int block_size = (n_moves+n_threads-1)/n_threads;
+    vector<score_t> scores(n_moves);
+    vector<thread> threads;
+    vector<ChessBoard> boards(n_threads);
+    for (int i = 0; i < n_threads; i++) {
+        int i0 = block_size*i;
+        int i1 = block_size*(i+1);
+        copy_board(boards[i], *this);
+        threads.push_back(thread(
+            [this, r](ChessBoard* board, move_t* m_begin, score_t* s_begin, int size) {
+                for (int j = 0; j < size; j++) {
+                    m_begin[j].piece += &board->_dealloc[0]-&this->_dealloc[0];
+                    s_begin[j] = board->get_score_recursive(m_begin[j], r);
+                    m_begin[j].piece -= &board->_dealloc[0]-&this->_dealloc[0];
+                }
+            },
+            &boards[i], &moves.front()+i0, &scores.front()+i0, min(i1, n_moves)-i0
+        ));
+    }
+    for (thread& t: threads) {t.join();}
+    
+    for (int i = 0; i < n_moves; i++) {
+        const auto& move = moves[i];
+        const score_t& advantage = scores[i];
         if (advantage == INVALID_SCORE) {continue;}
         if (advantage > best_advantage) { // better than current
             best_advantage = advantage;

@@ -16,6 +16,7 @@ using namespace chess;
 
 int main() {
     cout << "START PROGRAM" << endl;
+    cout << "Hardware concurrency: " << thread::hardware_concurrency() << '\n';
     rng_init(0);
     ChessBoard board;
     board.default_setup();
