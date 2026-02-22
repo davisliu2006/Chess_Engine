@@ -1,11 +1,13 @@
 # Chess_Engine
 
-Attempt at creating a chess AI algorithm.
+This project is an attempt at creating a chess AI algorithm from scratch in C++.
+
+It uses a minimax algorithm to compute optimal chess moves by maximizing an evaluation function up to a certain depth over possible game states. The engine also supports multithreading to evaluate moves concurrently and speed up execution time in multi-core processors.
 
 ## Headers
 
 ```cpp
-#include "chess/chess.hpp"
+#include "chess/chess.hpp" // include the main library
 ```
 
 ## Compile Linking

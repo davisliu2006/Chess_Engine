@@ -9,7 +9,6 @@
 #include "headers/rng.hpp"
 #include "chess/chess.hpp"
 #include "chess/chess_openings.hpp"
-#include "chess/chess_state.hpp"
 
 using namespace std;
 using namespace chess;
