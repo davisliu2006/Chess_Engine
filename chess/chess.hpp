@@ -8,3 +8,4 @@ Main header that includes everything else.
 #include "chess_base.hpp"
 #include "chess_board.hpp"
 #include "chess_debug.hpp"
+#include "chess_state.hpp"
