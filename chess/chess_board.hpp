@@ -36,6 +36,7 @@ namespace chess {
             piece.onboard = true;
         }
         ChessPiece* create_piece(bool iswhite, piece_t type) {
+            assert(_dealloc.size() < _dealloc.capacity());
             _dealloc.push_back({iswhite, type});
             return &_dealloc.back();
         }

@@ -33,7 +33,7 @@ int main() {
         // cout << "Black moves:\n";
         // board.print_all_moves(false);
         double t0 = time();
-        move_score_t best_mps = board.get_best_move(white_turn, 4);
+        move_score_t best_mps = board.get_best_move_concurrent(white_turn, 4);
         double t = time();
         cout << best_mps << " computed in " << t-t0 << '\n';
         if (best_mps.is_invalid()) {return 0;}
