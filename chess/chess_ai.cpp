@@ -152,6 +152,7 @@ move_score_t ChessBoard::get_best_move_concurrent(bool iswhite, int r) {
     int block_size = (n_moves+n_threads-1)/n_threads;
     vector<score_t> scores(n_moves);
     vector<thread> threads;
+    threads.reserve(n_threads);
     vector<ChessBoard> boards(n_threads);
     for (int i = 0; i < n_threads; i++) {
         int i0 = block_size*i;
