@@ -139,14 +139,8 @@ move_score_t ChessBoard::get_best_move(bool iswhite, int r) {
     return candidates[randint(0, candidates.size()-1)]; // return random from list of best
 }
 
-// get best move with recursion depth "r"
-move_score_t ChessBoard::get_best_move_concurrent(bool iswhite, int r) {
-    vector<move_score_t> candidates; // all "best moves"
-    candidates.reserve(8);
-    score_t best_advantage = -1e9;
-
-    // test all possible moves
-    auto moves = get_all_moves(iswhite);
+// concurrently search move scores with recursion depth "r"
+vector<score_t> ChessBoard::get_scores_recursive(vector<move_t>& moves, int r) {
     const int n_moves = moves.size();
     const int n_threads = min<int>(moves.size(), thread::hardware_concurrency());
     int block_size = (n_moves+n_threads-1)/n_threads;
@@ -170,8 +164,20 @@ move_score_t ChessBoard::get_best_move_concurrent(bool iswhite, int r) {
         ));
     }
     for (thread& t: threads) {t.join();}
+    return scores;
+}
+
+// concurrently get best move with recursion depth "r"
+move_score_t ChessBoard::get_best_move_concurrent(bool iswhite, int r) {
+    vector<move_score_t> candidates; // all "best moves"
+    candidates.reserve(8);
+    score_t best_advantage = -1e9;
+
+    // test all possible moves
+    auto moves = get_all_moves(iswhite);
+    vector<score_t> scores = get_scores_recursive(moves, r);
     
-    for (int i = 0; i < n_moves; i++) {
+    for (int i = 0; i < moves.size(); i++) {
         const auto& move = moves[i];
         const score_t& advantage = scores[i];
         if (advantage == INVALID_SCORE) {continue;}
