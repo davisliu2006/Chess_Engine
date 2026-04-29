@@ -1,0 +1,15 @@
+# folders
+.cache
+bin/
+*/bin/
+build/
+dist/
+node_modules/
+!test/
+
+# files
+.DS_Store
+compile_commands.json
+package-lock.json
+
+#extensions

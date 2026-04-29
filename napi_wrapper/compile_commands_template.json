@@ -1,0 +1,13 @@
+[
+    {
+        "arguments": [
+            "clang++",
+            "-std=c++17",
+            "-I<dir>/napi_wrapper/node_modules/node-addon-api",
+            "-I/usr/local/include/node",
+            "addon.cpp"
+        ],
+        "directory": "<dir>/napi_wrapper",
+        "file": "addon.cpp"
+    }
+]
