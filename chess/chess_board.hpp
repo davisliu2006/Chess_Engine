@@ -109,6 +109,7 @@ namespace chess {
         // defined in chess_ai.cpp
         score_t get_score(bool iswhite) const;
         score_t get_score_recursive(const move_t& move, int r);
+        vector<score_t> get_scores_recursive(vector<move_t>& moves, int r);
         move_score_t get_best_move(bool iswhite, int r);
         move_score_t get_best_move_concurrent(bool iswhite, int r);
     };
