@@ -1,0 +1,10 @@
+.Piece {
+    display: inline-block;
+    font-size: 40px; text-align: center;
+    margin: 20px;
+    cursor: pointer;
+    transition: left 1s, bottom 1s;
+}
+.Piece:hover {
+    opacity: 50%;
+}

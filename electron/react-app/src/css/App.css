@@ -1,0 +1,43 @@
+@import url("../assets/fonts/fonts.css");
+
+body {
+    font-family: "Comfortaa";
+}
+
+.App {
+    position: absolute;
+    width: 100%; height: 100%;
+}
+
+.SidePanel {
+    position: absolute;
+    top: 0px; left: calc(100% - 200px);
+    height: 100%; width: 200px;
+    background-color: rgb(200, 210, 220);
+}
+
+.game-body {
+    position: absolute;
+    top: 0px; left: 0px;
+    height: 100%; width: calc(100% - 200px);
+}
+
+.TopBar {
+    position: absolute;
+    top: 0px; left: 0px;
+    width: 100%; height: 100px;
+    background-color: rgb(200, 210, 220);
+}
+
+.board-holder {
+    position: absolute;
+    top: 100px; left: 0px;
+    width: 100%; height: calc(100% - 100px);
+    overflow: hidden;
+}
+
+.Board {
+    position: absolute;
+    width: 400px; height: 400px;
+    top: 50%; left: 50%; transform: translate(-50%, -50%);
+}
