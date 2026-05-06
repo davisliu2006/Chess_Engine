@@ -1,0 +1,23 @@
+{
+    "name": "electron-test",
+    "version": "1.0.0",
+    "main": "main.js",
+    "scripts": {
+        "start": "npm run react-build && electron .",
+        "dev": "concurrently \"npm run react-start\" \"wait-on http://localhost:3000 && NODE_ENV='development' electron .\"",
+        "build": "npm run react-build && electron-builder",
+        "react-start": "cd react-app && npm run start && cd ..",
+        "react-build": "cd react-app && npm run build && cd .."
+    },
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "typescript": "^5.8.3"
+    },
+    "devDependencies": {
+        "concurrently": "^9.1.2",
+        "electron": "^36.2.1",
+        "electron-builder": "^26.0.12",
+        "wait-on": "^8.0.3"
+    }
+}

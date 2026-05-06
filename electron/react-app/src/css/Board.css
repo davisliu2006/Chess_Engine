@@ -1,0 +1,16 @@
+.BoardTile {
+    position: absolute;
+    width: 12.5%; height: 12.5%;
+}
+.BoardTile:hover {
+    opacity: 80%;
+}
+
+.BoardLabel {
+    position: absolute;
+    transition: bottom 1s, left 1s;
+}
+.BoardLabel label {
+    position: absolute;
+    top: 50%; left: 50%; transform: translate(-50%, -50%);
+}

@@ -1,0 +1,18 @@
+.SidePanel {
+    text-align: center;
+}
+
+.Timer {
+
+}
+
+.SidePanelButton {
+    display: inline-block;
+    border: solid 4px; border-radius: 100%;
+    width: 1em; height: 1em;
+    padding: 4px; margin: 4px;
+    cursor: pointer;
+}
+.SidePanelButton:hover {
+    opacity: 50%;
+}
