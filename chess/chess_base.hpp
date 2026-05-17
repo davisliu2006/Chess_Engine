@@ -34,9 +34,9 @@ namespace chess {
     enum piece_t: char {
         pawn = 1, knight = 2,
         bishop = 3, rook = 4,
-        queen = 5, king = 7
+        queen = 5, king = 6
     };
-    const int PIECE_T_SIZE = 8;
+    const int PIECE_T_SIZE = 7;
 
     // CLASSES
 
@@ -57,8 +57,8 @@ namespace chess {
     struct ChessPiece {
         int x = 0; // 0-7
         int y = 0; // 0-7
-        bool iswhite;
         piece_t type;
+        bool iswhite;
         bool onboard = false;
 
         // constructors
