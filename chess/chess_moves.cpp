@@ -71,7 +71,7 @@ static void append_moves(const ChessBoard& board, ChessPiece* piece, vector<ret_
         }
     }
     
-    if (piece->type == bishop or piece->type == queen) { // BISHOP or QUEEN
+    if (piece->type == bishop || piece->type == queen) { // BISHOP or QUEEN
         for (int i = 1; true; i++) { // down, left
             x1 = x-i; y1 = y-i;
             if (x1 >= 0 && y1 >= 0) { // in range
@@ -138,7 +138,7 @@ static void append_moves(const ChessBoard& board, ChessPiece* piece, vector<ret_
         }
     }
     
-    if (piece->type == rook or piece->type == queen) { // ROOK or QUEEN
+    if (piece->type == rook || piece->type == queen) { // ROOK or QUEEN
         for (int i = 1; true; i++) { // left
             x1 = x-i; y1 = y;
             if (x1 >= 0) { // in range
