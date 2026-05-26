@@ -16,6 +16,7 @@
             "defines": [
                 "NAPI_CPP_EXCEPTIONS"
             ],
+            "cflags_cc": ["-std=c++17"],
             "cflags!": ["-fno-exceptions"],
             "cflags_cc!": ["-fno-exceptions"],
             "xcode_settings": {
@@ -25,7 +26,10 @@
             },
             "msvs_settings": {
                 "VCCLCompilerTool": {
-                    "ExceptionHandling": 1
+                    "ExceptionHandling": 1,
+                    "AdditionalOptions": [
+                        "/std:c++17"
+                    ]
                 }
             }
         }
