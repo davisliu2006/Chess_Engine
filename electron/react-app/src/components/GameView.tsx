@@ -1,0 +1,37 @@
+import "../css/App.css";
+import SidePanel from "./SidePanel";
+import TopBar from "./TopBar";
+import Board from "./Board";
+import {StateHook} from "../include/react_hook";
+import {GameSettings} from "../game/settings";
+import {GameStateHook} from "../game/useGameState";
+
+export interface GameViewProps {
+    gameSettings: GameSettings;
+    gameStateHook: GameStateHook;
+    hooks: {
+        flipBoard: StateHook<boolean>;
+    };
+    goToSettings: () => void;
+}
+
+export default function GameView(props: GameViewProps) {
+    return (
+        <div className="App">
+            <SidePanel
+                gameSettings={props.gameSettings}
+                hooks={props.hooks}
+                goToSettings={props.goToSettings}
+            />
+            <div className="game-body">
+                <TopBar></TopBar>
+                <div className="board-holder">
+                    <Board
+                        gameStateHook={props.gameStateHook}
+                        hooks={props.hooks}
+                    ></Board>
+                </div>
+            </div>
+        </div>
+    );
+}
