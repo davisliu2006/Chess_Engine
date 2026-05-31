@@ -12,7 +12,8 @@
     "author": "",
     "license": "ISC",
     "dependencies": {
-        "typescript": "^5.8.3"
+        "typescript": "^5.8.3",
+        "chess-engine-napi": "file:../napi_wrapper"
     },
     "devDependencies": {
         "concurrently": "^9.1.2",

@@ -1,6 +1,7 @@
 import "./css/App.css";
 import "./assets/font-awesome/css/all.min.css";
-import {useState} from "react";
+import {useEffect, useState} from "react";
+import {runEngineSmokeTest} from "./game/engine_smoke";
 import GameView from "./components/GameView";
 import SettingsScreen from "./components/SettingsScreen";
 import {stateHook} from "./include/react_hook";
@@ -10,6 +11,10 @@ import useGameState from "./game/useGameState";
 type AppScreen = "settings" | "game";
 
 export default function App() {
+    useEffect(() => {
+        runEngineSmokeTest();
+    }, []);
+
     let [screen, setScreen] = useState<AppScreen>("settings");
     let [gameSettings, setGameSettings] = useState<GameSettings | null>(null);
 
