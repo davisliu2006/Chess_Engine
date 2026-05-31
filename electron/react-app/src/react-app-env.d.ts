@@ -13,3 +13,20 @@ declare module '*.svg' {
     const src: string;
     export default src;
 }
+
+type EngineCoord = [number, number];
+type EngineMove = [EngineCoord, EngineCoord];
+
+interface ChessEngineApi {
+    getValidMoves(board: string[][], iswhite: boolean): Promise<EngineMove[]>;
+    getScoresRecursive(
+        board: string[][],
+        moves: EngineMove[],
+        depth: number
+    ): Promise<number[]>;
+}
+
+interface Window {
+    chessEngine?: ChessEngineApi;
+    runEngineSmokeTest?: () => Promise<boolean>;
+}
