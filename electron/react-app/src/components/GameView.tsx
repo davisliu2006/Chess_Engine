@@ -27,6 +27,7 @@ export default function GameView(props: GameViewProps) {
                 <TopBar></TopBar>
                 <div className="board-holder">
                     <Board
+                        gameSettings={props.gameSettings}
                         gameStateHook={props.gameStateHook}
                         hooks={props.hooks}
                     ></Board>

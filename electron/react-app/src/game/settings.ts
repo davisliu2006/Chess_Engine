@@ -11,5 +11,5 @@ export const defaultGameSettings: GameSettings = {
 };
 
 export function isComputerTurn(settings: GameSettings, whiteTurn: boolean): boolean {
-    return whiteTurn ? settings.white === "Computer" : settings.black === "Computer";
+    return whiteTurn? settings.white == "Computer" : settings.black == "Computer";
 }

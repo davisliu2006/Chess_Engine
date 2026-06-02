@@ -41,8 +41,17 @@ export class GameState {
         if (index < 0 || index >= this.pieces.length) {
             throw new Error("Invalid piece index");
         }
+        this.captPiece(x, y);
         this.pieces[index].x = x;
         this.pieces[index].y = y;
+    }
+
+    captPiece(x: number, y: number) {
+        for (const piece of this.pieces) {
+            if (piece.onBoard && piece.x == x && piece.y == y) {
+                piece.onBoard = false;
+            }
+        }
     }
 
     endTurn() {

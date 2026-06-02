@@ -28,8 +28,10 @@ export default function useGameState(): GameStateHook {
 
     let movePiece = useCallback((index: number, x: number, y: number) => {
         gsRef.current.movePiece(index, x, y);
+        gsRef.current.endTurn();
         setPiecesState([...gsRef.current.pieces]);
         setWhiteTurn(gsRef.current.whiteTurn);
+        setSelectedPiece(null);
     }, []);
 
     let undo = useCallback(() => {
