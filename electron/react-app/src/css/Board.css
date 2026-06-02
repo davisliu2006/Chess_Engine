@@ -5,6 +5,9 @@
 .BoardTile:hover {
     opacity: 80%;
 }
+.BoardTile.legal {
+    box-shadow: inset 0 0 0 4px rgb(80, 180, 90);
+}
 
 .BoardLabel {
     position: absolute;

@@ -18,6 +18,16 @@ export async function getValidMoves(
     return window.chessEngine.getValidMoves(encodeBoard(pieces), iswhite);
 }
 
+export function destinationsForPiece(
+    moves: EngineMove[],
+    x: number,
+    y: number
+): EngineCoord[] {
+    return moves
+        .filter(([[fromX, fromY]]) => fromX == x && fromY == y)
+        .map(([, [toX, toY]]) => [toX, toY]);
+}
+
 export async function getScoresRecursive(
     pieces: Piece[],
     moves: EngineMove[],

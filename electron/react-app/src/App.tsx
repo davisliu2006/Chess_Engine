@@ -35,7 +35,7 @@ export default function App() {
         setScreen("settings");
     };
 
-    if (screen === "settings") {
+    if (screen == "settings") {
         return <SettingsScreen onStart={startGame}></SettingsScreen>;
     } else {
         return (
