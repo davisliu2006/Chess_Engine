@@ -9,6 +9,22 @@
     box-shadow: inset 0 0 0 4px rgb(80, 180, 90);
 }
 
+.BoardSuggestions {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.BoardSuggestions line {
+    stroke: rgb(230, 180, 60);
+    stroke-width: 0.8;
+    stroke-linecap: round;
+    opacity: 0.9;
+}
+
 .BoardLabel {
     position: absolute;
     transition: bottom 1s, left 1s;

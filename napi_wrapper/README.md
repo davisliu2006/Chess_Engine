@@ -1,5 +1,7 @@
 # Chess NAPI Wrapper
 
+Allows the engine to be called from JavaScript or TypeScript using the Node Addon API.
+
 ## Exposed Functions
 
 ```ts
@@ -29,4 +31,4 @@ class Board {
 - Piece cell strings use `<piece><color>`:
     - pieces: `p` pawn, `k` knight, `b` bishop, `r` rook, `Q` queen, `K` king
     - color: `0` black, `1` white
-- Empty cells can be represented as `"-"` (also accepted: `"--"` and `""`)
+- Empty cells can be represented as `"-"`, `"--"`, or `""`

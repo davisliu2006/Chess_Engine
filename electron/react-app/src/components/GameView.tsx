@@ -2,16 +2,14 @@ import "../css/App.css";
 import SidePanel from "./SidePanel";
 import TopBar from "./TopBar";
 import Board from "./Board";
-import {StateHook} from "../include/react_hook";
+import {GameConfigHooks} from "../game/config";
 import {GameSettings} from "../game/settings";
 import {GameStateHook} from "../game/useGameState";
 
 export interface GameViewProps {
     gameSettings: GameSettings;
     gameStateHook: GameStateHook;
-    hooks: {
-        flipBoard: StateHook<boolean>;
-    };
+    hooks: GameConfigHooks;
     goToSettings: () => void;
 }
 

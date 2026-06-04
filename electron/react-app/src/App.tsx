@@ -5,6 +5,7 @@ import {runEngineSmokeTest} from "./game/engine_smoke";
 import GameView from "./components/GameView";
 import SettingsScreen from "./components/SettingsScreen";
 import {stateHook} from "./include/react_hook";
+import {GameConfigHooks} from "./game/config";
 import {GameSettings} from "./game/settings";
 import useGameState from "./game/useGameState";
 
@@ -18,8 +19,9 @@ export default function App() {
     let [screen, setScreen] = useState<AppScreen>("settings");
     let [gameSettings, setGameSettings] = useState<GameSettings | null>(null);
 
-    let config = {
+    let config: GameConfigHooks = {
         flipBoard: stateHook(useState(false)),
+        showSuggestions: stateHook(useState(false)),
     };
 
     let gameStateHook = useGameState();

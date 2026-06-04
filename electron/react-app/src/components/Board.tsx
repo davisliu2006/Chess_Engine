@@ -3,10 +3,13 @@ import "../css/App.css";
 import "../css/Board.css";
 import "../css/Piece.css";
 import Piece from "./Piece";
-import {StateHook} from "../include/react_hook";
+import SuggestionLines from "./SuggestionLines";
+import {GameConfigHooks} from "../game/config";
 import {
     destinationsForPiece,
     EngineCoord,
+    EngineMove,
+    getSuggestedMoves,
     getValidMoves,
 } from "../game/engine";
 import {GameSettings, isComputerTurn} from "../game/settings";
@@ -22,14 +25,12 @@ export interface BoardTileProps {
     gameStateHook: GameStateHook;
     isLegalMove: boolean;
     onClick?: () => void;
-    hooks: {
-        flipBoard: StateHook<boolean>;
-    };
+    hooks: GameConfigHooks;
 }
 export function BoardTile(props: BoardTileProps) {
     let selectedPiece = props.gameStateHook.selectedPiece;
     let selected = false;
-    if (selectedPiece !== null) {
+    if (selectedPiece != null) {
         let piece = props.gameStateHook.pieces[selectedPiece];
         selected = (piece.x == props.x && piece.y == props.y);
     }
@@ -57,9 +58,7 @@ export function BoardTile(props: BoardTileProps) {
 export interface BoardLabelProps {
     axis: "x" | "y";
     index: number;
-    hooks: {
-        flipBoard: StateHook<boolean>;
-    };
+    hooks: GameConfigHooks;
 }
 export function BoardLabel(props: BoardLabelProps) {
     if (props.axis == "x") {
@@ -89,15 +88,15 @@ export function BoardLabel(props: BoardLabelProps) {
 export interface BoardProps {
     gameSettings: GameSettings;
     gameStateHook: GameStateHook;
-    hooks: {
-        flipBoard: StateHook<boolean>;
-    };
+    hooks: GameConfigHooks;
 }
 export default function Board(props: BoardProps) {
-    const {gameStateHook, gameSettings} = props;
+    const {gameStateHook, gameSettings, hooks} = props;
     const [legalTargets, setLegalTargets] = useState<EngineCoord[]>([]);
+    const [suggestedMoves, setSuggestedMoves] = useState<EngineMove[]>([]);
 
     const humanTurn = !isComputerTurn(gameSettings, gameStateHook.whiteTurn);
+    const showSuggestions = hooks.showSuggestions.val;
 
     const legalTargetHashes = useMemo(
         () => new Set(legalTargets.map(([x, y]) => coordHash(x, y))),
@@ -114,7 +113,6 @@ export default function Board(props: BoardProps) {
         if (piece.color != gameStateHook.whiteTurn) { // selected invalid peice
             setLegalTargets([]); return;
         }
-
         let cancelled = false; // async operation cancelled
         (async () => {
             const moves = await getValidMoves(gameStateHook.pieces, gameStateHook.whiteTurn);
@@ -123,12 +121,36 @@ export default function Board(props: BoardProps) {
                 destinationsForPiece(moves, piece.x, piece.y)
             );
         })();
-
         return () => { // async operation cancelled
             cancelled = true;
         };
     }, [
         gameStateHook.selectedPiece,
+        gameStateHook.pieces,
+        gameStateHook.whiteTurn,
+        humanTurn
+    ]);
+
+    // update suggested moves when state changes
+    useEffect(() => {
+        if (!showSuggestions || !humanTurn) {
+            setSuggestedMoves([]); return;
+        }
+        let cancelled = false; // async operation cancelled
+        (async () => {
+            const moves = await getSuggestedMoves(
+                gameStateHook.pieces,
+                gameStateHook.whiteTurn
+            );
+            if (!cancelled) {
+                setSuggestedMoves(moves);
+            }
+        })();
+        return () => { // async operation cancelled
+            cancelled = true;
+        };
+    }, [
+        showSuggestions,
         gameStateHook.pieces,
         gameStateHook.whiteTurn,
         humanTurn
@@ -141,6 +163,7 @@ export default function Board(props: BoardProps) {
         && legalTargetHashes.has(key)) { // move piece
             gameStateHook.movePiece(gameStateHook.selectedPiece, x, y);
             setLegalTargets([]);
+            setSuggestedMoves([]);
             return;
         }
 
@@ -202,6 +225,12 @@ export default function Board(props: BoardProps) {
     return (
         <div className="Board" style={{}}>
             {tiles}
+            {showSuggestions && (
+                <SuggestionLines
+                    moves={suggestedMoves}
+                    flipBoard={hooks.flipBoard.val}
+                />
+            )}
             {labels}
             {pieces}
         </div>
