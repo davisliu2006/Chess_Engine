@@ -22,3 +22,11 @@
 .SidePanelButton:hover {
     opacity: 50%;
 }
+.SidePanelButton.active {
+    background-color: rgb(230, 200, 80);
+}
+
+.SidePanelHintLabel {
+    font-size: 0.8rem;
+    margin: 0 0 8px 0;
+}

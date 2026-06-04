@@ -1,8 +1,8 @@
 import "../css/App.css";
 import "../css/SidePanel.css"
 import "../assets/font-awesome/css/all.min.css";
-import { StateHook } from "../include/react_hook";
-import { GameSettings } from "../game/settings";
+import {GameConfigHooks} from "../game/config";
+import {GameSettings} from "../game/settings";
 
 export function Timer(props: any) {
     return (
@@ -13,12 +13,16 @@ export function Timer(props: any) {
 }
 
 export interface SidePanelButtonProps {
+    className?: string;
     onClick?: (event: React.MouseEvent<HTMLDivElement>) => void;
     children: React.ReactNode;
 }
 export function SidePanelButton(props: SidePanelButtonProps) {
+    const className = props.className
+        ? `SidePanelButton ${props.className}`
+        : "SidePanelButton";
     return (
-        <div className="SidePanelButton" onClick={props.onClick}>
+        <div className={className} onClick={props.onClick}>
             {props.children}
         </div>
     );
@@ -26,9 +30,7 @@ export function SidePanelButton(props: SidePanelButtonProps) {
 
 export interface SidePanelProps {
     gameSettings: GameSettings;
-    hooks: {
-        flipBoard: StateHook<boolean>;
-    };
+    hooks: GameConfigHooks;
     goToSettings: () => void;
 }
 export default function SidePanel(props: SidePanelProps) {
@@ -41,7 +43,21 @@ export default function SidePanel(props: SidePanelProps) {
                 Black: {props.gameSettings.black}
             </p>
             <Timer></Timer>
-            <p>Show Hints</p>
+            <SidePanelButton
+                className={props.hooks.showSuggestions.val? "active" : ""}
+                onClick={() => {
+                    props.hooks.showSuggestions.set(
+                        !props.hooks.showSuggestions.val
+                    );
+                }}
+            >
+                <i className="fas fa-lightbulb"></i>
+            </SidePanelButton>
+            <p className="SidePanelHintLabel">
+                {props.hooks.showSuggestions.val
+                    ? "Suggestions on"
+                    : "Suggestions off"}
+            </p>
             <div>
                 <SidePanelButton>
                     <i className="fas fa-chevron-left"></i>

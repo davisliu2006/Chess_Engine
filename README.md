@@ -19,3 +19,7 @@ It uses a minimax algorithm to compute optimal chess moves by maximizing an eval
 ## Concurrency
 
 Use `ChessBoard::get_best_move_concurrent` instead of `ChessBoard::get_best_move` to enable concurrency.
+
+## Electron App
+
+The electron app is a UI wrapper around the engine. It uses NAPI to run the native engine in a NodeJS app environment.
