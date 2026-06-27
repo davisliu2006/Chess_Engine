@@ -34,6 +34,9 @@ export interface SidePanelProps {
     goToSettings: () => void;
 }
 export default function SidePanel(props: SidePanelProps) {
+    const hasComputer = props.gameSettings.white == "Computer"
+        || props.gameSettings.black == "Computer";
+
     return (
         <div className="SidePanel">
             <p>Chess Game</p>
@@ -58,6 +61,27 @@ export default function SidePanel(props: SidePanelProps) {
                     ? "Suggestions on"
                     : "Suggestions off"}
             </p>
+            {hasComputer && (
+                <>
+                    <SidePanelButton
+                        className={props.hooks.pauseComputer.val? "active" : ""}
+                        onClick={() => {
+                            props.hooks.pauseComputer.set(
+                                !props.hooks.pauseComputer.val
+                            );
+                        }}
+                    >
+                        <i className={
+                            props.hooks.pauseComputer.val?
+                                "fas fa-play" : "fas fa-pause"
+                        }></i>
+                    </SidePanelButton>
+                    <p className="SidePanelHintLabel">{
+                        props.hooks.pauseComputer.val?
+                            "Computer paused" : "Computer playing"
+                    }</p>
+                </>
+            )}
             <div>
                 <SidePanelButton>
                     <i className="fas fa-chevron-left"></i>

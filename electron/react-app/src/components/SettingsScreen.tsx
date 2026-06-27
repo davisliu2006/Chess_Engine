@@ -1,11 +1,7 @@
 import "../css/App.css";
 import "../css/SettingsScreen.css";
-import {useState} from "react";
-import {
-    defaultGameSettings,
-    GameSettings,
-    PlayerKind,
-} from "../game/settings";
+import {useEffect, useState} from "react";
+import {GameSettings, PlayerKind} from "../game/settings";
 
 interface PlayerKindSelectorProps {
     label: string;
@@ -37,11 +33,17 @@ function PlayerKindSelector(props: PlayerKindSelectorProps) {
 }
 
 export interface SettingsScreenProps {
-    onStart: (settings: GameSettings) => void;
+    settings: GameSettings;
+    onStartNewGame: (settings: GameSettings) => void;
+    onUpdateCurrentGame: (settings: GameSettings) => void;
 }
 
 export default function SettingsScreen(props: SettingsScreenProps) {
-    let [settings, setSettings] = useState<GameSettings>(defaultGameSettings);
+    let [settings, setSettings] = useState<GameSettings>(props.settings);
+
+    useEffect(() => {
+        setSettings(props.settings);
+    }, [props.settings]);
 
     return (
         <div className="SettingsScreen">
@@ -60,9 +62,16 @@ export default function SettingsScreen(props: SettingsScreenProps) {
                 <button
                     type="button"
                     className="SettingsStartButton"
-                    onClick={() => props.onStart(settings)}
+                    onClick={() => props.onStartNewGame(settings)}
                 >
-                    Start Game
+                    Start New Game
+                </button>
+                <button
+                    type="button"
+                    className="SettingsBackButton"
+                    onClick={() => props.onUpdateCurrentGame(settings)}
+                >
+                    Update Current Game
                 </button>
             </div>
         </div>

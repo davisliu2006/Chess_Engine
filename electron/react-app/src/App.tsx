@@ -6,7 +6,7 @@ import GameView from "./components/GameView";
 import SettingsScreen from "./components/SettingsScreen";
 import {stateHook} from "./include/react_hook";
 import {GameConfigHooks} from "./game/config";
-import {GameSettings} from "./game/settings";
+import {defaultGameSettings, GameSettings} from "./game/settings";
 import useGameState from "./game/useGameState";
 
 type AppScreen = "settings" | "game";
@@ -22,6 +22,7 @@ export default function App() {
     let config: GameConfigHooks = {
         flipBoard: stateHook(useState(false)),
         showSuggestions: stateHook(useState(false)),
+        pauseComputer: stateHook(useState(false)),
     };
 
     let gameStateHook = useGameState();
@@ -33,12 +34,23 @@ export default function App() {
         setScreen("game");
     };
 
+    let applySettings = (settings: GameSettings) => {
+        setGameSettings(settings);
+        setScreen("game");
+    };
+
     let goToSettings = () => {
         setScreen("settings");
     };
 
     if (screen == "settings") {
-        return <SettingsScreen onStart={startGame}></SettingsScreen>;
+        return (
+            <SettingsScreen
+                settings={gameSettings ?? defaultGameSettings}
+                onStartNewGame={startGame}
+                onUpdateCurrentGame={applySettings}
+            ></SettingsScreen>
+        );
     } else {
         return (
             <GameView
