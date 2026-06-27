@@ -72,6 +72,14 @@ export class GameState {
         this.pieces = structuredClone(cur.array);
         this.whiteTurn = !this.whiteTurn;
     }
+
+    canUndo(): boolean {
+        return this.history.canUndo();
+    }
+
+    canRedo(): boolean {
+        return this.history.canRedo();
+    }
 }
 
 export {Piece, HistoryStack};

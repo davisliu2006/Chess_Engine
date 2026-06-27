@@ -42,4 +42,10 @@ export default class HistoryStack<T = HistoryItem> {
             throw new Error("No current item in history");
         }
     }
+    canUndo(): boolean {
+        return this.index > 0;
+    }
+    canRedo(): boolean {
+        return this.index < this.items.length - 1;
+    }
 }
