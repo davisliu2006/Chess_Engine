@@ -20,7 +20,6 @@
 
 .BoardSuggestions line {
     stroke: rgb(230, 180, 60);
-    stroke-width: 0.8;
     stroke-linecap: round;
     opacity: 0.9;
 }
