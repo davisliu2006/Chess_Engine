@@ -23,3 +23,7 @@ Use `ChessBoard::get_best_move_concurrent` instead of `ChessBoard::get_best_move
 ## Electron App
 
 The electron app is a UI wrapper around the engine. It uses NAPI to run the native engine in a NodeJS app environment.
+
+<div align="center">
+    <img style="width: 500px;" src="https://davisliu2006.github.io/images/other-projects/chess.webp">
+</div>
