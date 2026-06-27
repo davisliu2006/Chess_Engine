@@ -18,6 +18,7 @@ export default function GameView(props: GameViewProps) {
         <div className="App">
             <SidePanel
                 gameSettings={props.gameSettings}
+                gameStateHook={props.gameStateHook}
                 hooks={props.hooks}
                 goToSettings={props.goToSettings}
             />

@@ -25,6 +25,13 @@
 .SidePanelButton.active {
     background-color: rgb(230, 200, 80);
 }
+.SidePanelButton.disabled {
+    opacity: 50%;
+    cursor: default;
+}
+.SidePanelButton.disabled:hover {
+    opacity: 50%;
+}
 
 .SidePanelHintLabel {
     font-size: 0.8rem;

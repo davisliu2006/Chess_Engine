@@ -3,6 +3,7 @@ import "../css/SidePanel.css"
 import "../assets/font-awesome/css/all.min.css";
 import {GameConfigHooks} from "../game/config";
 import {GameSettings} from "../game/settings";
+import {GameStateHook} from "../game/useGameState";
 
 export function Timer(props: any) {
     return (
@@ -14,15 +15,21 @@ export function Timer(props: any) {
 
 export interface SidePanelButtonProps {
     className?: string;
+    disabled?: boolean;
     onClick?: (event: React.MouseEvent<HTMLDivElement>) => void;
     children: React.ReactNode;
 }
 export function SidePanelButton(props: SidePanelButtonProps) {
-    const className = props.className
-        ? `SidePanelButton ${props.className}`
-        : "SidePanelButton";
+    const className = [
+        "SidePanelButton",
+        props.className,
+        props.disabled? "disabled" : "",
+    ].filter(Boolean).join(" ");
     return (
-        <div className={className} onClick={props.onClick}>
+        <div
+            className={className}
+            onClick={props.disabled? undefined : props.onClick}
+        >
             {props.children}
         </div>
     );
@@ -30,6 +37,7 @@ export function SidePanelButton(props: SidePanelButtonProps) {
 
 export interface SidePanelProps {
     gameSettings: GameSettings;
+    gameStateHook: GameStateHook;
     hooks: GameConfigHooks;
     goToSettings: () => void;
 }
@@ -83,10 +91,16 @@ export default function SidePanel(props: SidePanelProps) {
                 </>
             )}
             <div>
-                <SidePanelButton>
+                <SidePanelButton
+                    disabled={!props.gameStateHook.canUndo}
+                    onClick={() => props.gameStateHook.undo()}
+                >
                     <i className="fas fa-chevron-left"></i>
                 </SidePanelButton>
-                <SidePanelButton>
+                <SidePanelButton
+                    disabled={!props.gameStateHook.canRedo}
+                    onClick={() => props.gameStateHook.redo()}
+                >
                     <i className="fas fa-chevron-right"></i>
                 </SidePanelButton>
             </div>
