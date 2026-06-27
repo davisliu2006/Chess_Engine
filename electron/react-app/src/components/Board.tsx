@@ -162,6 +162,7 @@ export default function Board(props: BoardProps) {
     // make a move when it is the computer's turn
     useEffect(() => {
         if (!isComputerTurn(gameSettings, gameStateHook.whiteTurn)) {return;}
+        if (hooks.pauseComputer.val) {return;}
         if (!isEngineAvailable()) {
             console.warn("Computer turn skipped: Chess engine not available.");
             return;
@@ -174,7 +175,8 @@ export default function Board(props: BoardProps) {
             if (cancelled || move == null) {return;}
             // need to re-check if it's the right turn after async operation
             if (!isComputerTurn(gameSettings, gameStateHook.whiteTurn)
-            || gameStateHook.whiteTurn != turnColor) {return;}
+            || gameStateHook.whiteTurn != turnColor
+            || hooks.pauseComputer.val) {return;}
 
             const pieceIndex = pieceIndexForMove(gameStateHook.pieces, move);
             if (pieceIndex == -1) {return;}
@@ -191,6 +193,7 @@ export default function Board(props: BoardProps) {
         gameStateHook.pieces,
         gameStateHook.whiteTurn,
         gameStateHook.movePiece,
+        hooks.pauseComputer.val,
     ]);
 
     function handleTileClick(x: number, y: number) {

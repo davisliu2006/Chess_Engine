@@ -60,6 +60,8 @@
 }
 
 .SettingsStartButton {
+    display: block;
+    width: 100%;
     margin-top: 8px;
     padding: 12px 32px;
     border: none;
@@ -70,8 +72,29 @@
     font-size: 1rem;
     font-weight: 600;
     cursor: pointer;
+    box-sizing: border-box;
 }
 
 .SettingsStartButton:hover {
     opacity: 0.9;
+}
+
+.SettingsBackButton {
+    display: block;
+    width: 100%;
+    margin-top: 12px;
+    padding: 12px 32px;
+    border: solid 2px rgb(140, 150, 165);
+    border-radius: 8px;
+    background-color: rgb(230, 235, 240);
+    color: inherit;
+    font-family: inherit;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    box-sizing: border-box;
+}
+
+.SettingsBackButton:hover {
+    opacity: 0.85;
 }
