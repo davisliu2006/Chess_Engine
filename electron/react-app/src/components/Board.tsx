@@ -9,8 +9,11 @@ import {
     destinationsForPiece,
     EngineCoord,
     EngineMove,
+    getBestMove,
     getSuggestedMoves,
     getValidMoves,
+    isEngineAvailable,
+    pieceIndexForMove,
 } from "../game/engine";
 import {GameSettings, isComputerTurn} from "../game/settings";
 import {GameStateHook} from "../game/useGameState";
@@ -154,6 +157,40 @@ export default function Board(props: BoardProps) {
         gameStateHook.pieces,
         gameStateHook.whiteTurn,
         humanTurn
+    ]);
+
+    // make a move when it is the computer's turn
+    useEffect(() => {
+        if (!isComputerTurn(gameSettings, gameStateHook.whiteTurn)) {return;}
+        if (!isEngineAvailable()) {
+            console.warn("Computer turn skipped: Chess engine not available.");
+            return;
+        }
+
+        let cancelled = false;  // async operation cancelled
+        const turnColor = gameStateHook.whiteTurn;
+        (async () => {
+            const move = await getBestMove(gameStateHook.pieces, turnColor);
+            if (cancelled || move == null) {return;}
+            // need to re-check if it's the right turn after async operation
+            if (!isComputerTurn(gameSettings, gameStateHook.whiteTurn)
+            || gameStateHook.whiteTurn != turnColor) {return;}
+
+            const pieceIndex = pieceIndexForMove(gameStateHook.pieces, move);
+            if (pieceIndex == -1) {return;}
+
+            const [, [toX, toY]] = move;
+            gameStateHook.movePiece(pieceIndex, toX, toY);
+        })();
+
+        return () => {
+            cancelled = true;
+        };
+    }, [
+        gameSettings,
+        gameStateHook.pieces,
+        gameStateHook.whiteTurn,
+        gameStateHook.movePiece,
     ]);
 
     function handleTileClick(x: number, y: number) {
