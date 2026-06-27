@@ -23,7 +23,7 @@ export default function GameView(props: GameViewProps) {
                 goToSettings={props.goToSettings}
             />
             <div className="game-body">
-                <TopBar></TopBar>
+                <TopBar pieces={props.gameStateHook.pieces}></TopBar>
                 <div className="board-holder">
                     <Board
                         gameSettings={props.gameSettings}
