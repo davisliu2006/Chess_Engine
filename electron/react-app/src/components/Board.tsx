@@ -8,12 +8,12 @@ import {GameConfigHooks} from "../game/config";
 import {
     destinationsForPiece,
     EngineCoord,
-    EngineMove,
     getBestMove,
     getSuggestedMoves,
     getValidMoves,
     isEngineAvailable,
     pieceIndexForMove,
+    ScoredMove,
 } from "../game/engine";
 import {GameSettings, isComputerTurn} from "../game/settings";
 import {GameStateHook} from "../game/useGameState";
@@ -96,7 +96,7 @@ export interface BoardProps {
 export default function Board(props: BoardProps) {
     const {gameStateHook, gameSettings, hooks} = props;
     const [legalTargets, setLegalTargets] = useState<EngineCoord[]>([]);
-    const [suggestedMoves, setSuggestedMoves] = useState<EngineMove[]>([]);
+    const [suggestedMoves, setSuggestedMoves] = useState<ScoredMove[]>([]);
 
     const humanTurn = !isComputerTurn(gameSettings, gameStateHook.whiteTurn);
     const showSuggestions = hooks.showSuggestions.val;

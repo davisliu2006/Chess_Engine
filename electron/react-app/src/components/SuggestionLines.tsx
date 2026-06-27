@@ -1,4 +1,4 @@
-import {EngineMove} from "../game/engine";
+import {ScoredMove} from "../game/engine";
 
 function squareCenterSvg(
     x: number,
@@ -13,7 +13,7 @@ function squareCenterSvg(
 }
 
 export interface SuggestionLinesProps {
-    moves: EngineMove[];
+    moves: ScoredMove[];
     flipBoard: boolean;
 }
 
@@ -22,13 +22,22 @@ export default function SuggestionLines(props: SuggestionLinesProps) {
         return null;
     }
 
+    const bestScore = props.moves[0].score;
+    const worstScore = props.moves[props.moves.length - 1].score;
+
+    function strokeWidth(score: number): number {
+        if (bestScore == worstScore) {return 1;}
+        const t = (score - worstScore) / (bestScore - worstScore);
+        return 0.5 + t*0.5;
+    }
+
     return (
         <svg
             className="BoardSuggestions"
             viewBox="0 0 100 100"
             preserveAspectRatio="none"
         >
-            {props.moves.map((move, index) => {
+            {props.moves.map(({move, score}, index) => {
                 const [[fromX, fromY], [toX, toY]] = move;
                 const [x1, y1] = squareCenterSvg(
                     fromX, fromY,
@@ -40,6 +49,7 @@ export default function SuggestionLines(props: SuggestionLinesProps) {
                         key={index}
                         x1={x1} y1={y1}
                         x2={x2} y2={y2}
+                        strokeWidth={strokeWidth(score)}
                     />
                 );
             })}
